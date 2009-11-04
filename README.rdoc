@@ -1,0 +1,32 @@
+= Canonical Host
+
+Canonical Host is a bit of Rack middleware that lets you define a single host
+as the canonical host for your site, and redirect all other hostnames to that
+canonical host.
+
+In the simplest case, just specify the host name and any requests coming in
+that aren't for the host example.com will be rewritten with the proper host.
+
+    use CanonicalHost, 'example.com'
+
+You could also define a constant in your environment-specific configuration
+files to set up a canonical host redirect for only certain environments.
+
+    CANONICAL_HOST = 'example.com'
+
+Then, you can set up the middle are like this.
+
+    use CanonicalHost, CANONICAL_HOST if defined?(CANONICAL_HOST)
+
+Alternatively, you can pass a block whose return value will be used to set the
+canonical host.
+
+    use CanonicalHost do
+      case ENV['RACK_ENV'].to_sym
+        when :staging then 'example.com'
+        when :production then 'staging.example.com'
+      end
+    end
+
+
+Copyright (c) 2009 Tyler Hunt. See LICENSE for details.
