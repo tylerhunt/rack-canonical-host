@@ -2,7 +2,8 @@ module Rack # :nodoc:
   class CanonicalHost
     def initialize(app, host=nil, &block)
       @app = app
-      @host = (block_given? && block.call) || host
+      @host = host
+      @block = block
     end
 
     def call(env)
@@ -14,11 +15,16 @@ module Rack # :nodoc:
     end
 
     def url(env)
-      if @host && env['SERVER_NAME'] != @host
+      if (host = host(env)) && env['SERVER_NAME'] != host
         url = Rack::Request.new(env).url
-        url.sub(%r{\A(https?://)(.*?)(:\d+)?(/|$)}, "\\1#{@host}\\3/")
+        url.sub(%r{\A(https?://)(.*?)(:\d+)?(/|$)}, "\\1#{host}\\3/")
       end
     end
     private :url
+
+    def host(env)
+      @block ? @block.call(env) || @host : @host
+    end
+    private :host
   end
 end
