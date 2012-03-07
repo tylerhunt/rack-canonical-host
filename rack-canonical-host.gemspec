@@ -8,4 +8,5 @@ Gem::Specification.new do |gem|
   gem.files = Dir['LICENSE', 'README.rdoc', 'lib/**/*']
 
   gem.add_dependency 'rack', '>= 1.0.0'
+  gem.add_development_dependency 'rspec', '~> 2.0'
 end
