@@ -4,6 +4,11 @@ Rack middleware that lets you define a single host name as the canonical host
 for your application. Requests for other host names will then be redirected to
 the canonical host.
 
+[![Build Status][travis-image]][travis]
+
+[travis]: http://travis-ci.org/tylerhunt/rack-canonical-host
+[travis-image]: https://secure.travis-ci.org/tylerhunt/rack-canonical-host.png
+
 
 ## Installation
 
