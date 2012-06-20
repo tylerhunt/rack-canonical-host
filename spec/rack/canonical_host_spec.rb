@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-require 'rack'
-require 'uri'
-
-require 'rack-canonical-host'
-
 describe Rack::CanonicalHost do
   context '#call' do
     let(:requested_uri) { URI.parse('http://myapp.com/test/path') }
