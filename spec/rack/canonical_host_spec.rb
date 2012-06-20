@@ -48,7 +48,7 @@ describe Rack::CanonicalHost do
     end
 
     context 'with :ignore option' do
-      let(:app) { build_app('example.com', ignore: ['example.net']) }
+      let(:app) { build_app('example.com', :ignore => ['example.net']) }
 
       include_context 'matching and non-matching requests'
 
