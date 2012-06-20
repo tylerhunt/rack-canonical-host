@@ -19,34 +19,30 @@ module Rack
       end
 
       def known_host?
-        request_host == @host || ignored_host?
+        request_uri.host == @host || ignored_host?
       end
 
       def response
-        [
-          301,
-          { 'Location' => url, 'Content-Type' => 'text/html' },
-          [HTML_TEMPLATE % url]
-        ]
+        headers = { 'Location' => new_url, 'Content-Type' => 'text/html' }
+        [301, headers, [HTML_TEMPLATE % new_url]]
       end
-
-      def request_host
-        @request_host ||= @env['SERVER_NAME']
-      end
-      private :request_host
 
       def ignored_host?
         if ignored_hosts = @options[:ignored_hosts]
-          ignored_hosts.include?(request_host)
+          ignored_hosts.include?(request_uri.host)
         end
       end
       private :ignored_host?
 
-      def url
-        url = Rack::Request.new(@env).url
-        url.sub(%r{\A(https?://)(.*?)(:\d+)?(/|$)}, "\\1#{@host}\\3/")
+      def new_url
+        request_uri.tap { |uri| uri.host = @host }.to_s
       end
-      private :url
+      private :new_url
+
+      def request_uri
+        URI.parse(Rack::Request.new(@env).url)
+      end
+      private :request_uri
     end
   end
 end
