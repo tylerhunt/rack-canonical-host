@@ -47,8 +47,8 @@ describe Rack::CanonicalHost do
       include_context 'matching and non-matching requests'
     end
 
-    context 'with ignored hosts' do
-      let(:app) { build_app('example.com', ignored_hosts: ['example.net']) }
+    context 'with :ignore option' do
+      let(:app) { build_app('example.com', ignore: ['example.net']) }
 
       include_context 'matching and non-matching requests'
 

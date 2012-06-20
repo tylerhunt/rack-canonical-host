@@ -62,11 +62,11 @@ Now, the middleware will only be used if a canonical host has been defined.
 
 ### Options
 
-If you'd like the middleware to ignore certain hosts, use the `:ignore_hosts`
+If you'd like the middleware to ignore certain hosts, use the `:ignore`
 option:
 
 ``` ruby
-use Rack::CanonicalHost, 'example.com', ignored_hosts: ['api.example.com']
+use Rack::CanonicalHost, 'example.com', ignore: ['api.example.com']
 ```
 
 In this case, requests for the host `api.example.com` will not be redirected.

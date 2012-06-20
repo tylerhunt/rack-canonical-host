@@ -1,5 +1,9 @@
 # Changelog
 
+## Rack::CanonicalHost 0.0.5 (Unreleased)
+
+  * Rename `ignored_hosts` option to `ignore`
+
 ## Rack::CanonicalHost 0.0.4
 
   * Add option to ignored certain hosts ([Eric Allam][rubymaverick])

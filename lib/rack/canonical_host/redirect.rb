@@ -15,11 +15,11 @@ module Rack
       def initialize(env, host, options={})
         @env = env
         @host = host
-        @options = options
+        @ignore = options[:ignore]
       end
 
       def known_host?
-        request_uri.host == @host || ignored_host?
+        request_uri.host == @host || ignored?
       end
 
       def response
@@ -27,12 +27,10 @@ module Rack
         [301, headers, [HTML_TEMPLATE % new_url]]
       end
 
-      def ignored_host?
-        if ignored_hosts = @options[:ignored_hosts]
-          ignored_hosts.include?(request_uri.host)
-        end
+      def ignored?
+        @ignore.include?(request_uri.host) if @ignore
       end
-      private :ignored_host?
+      private :ignored?
 
       def new_url
         request_uri.tap { |uri| uri.host = @host }.to_s
