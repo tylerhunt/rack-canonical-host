@@ -25,13 +25,27 @@ describe Rack::CanonicalHost do
     context 'with a request to a non-matching host' do
       let(:response) { stack('new-host.com').call(env) }
 
-      it { should redirect.via(301) }
-      it { should redirect.to('http://new-host.com/test/path') }
+      context 'but the new-host is set in the ignored options' do
+        let(:response) { stack('new-host.com', { ignored_hosts: ["myapp.com"] }).call(env) }
 
-      it 'does not call further up the stack' do
-        parent_app.should_receive(:call).never
-        subject
+        it { should_not redirect }
+
+        it 'calls up the stack with the received env' do
+          parent_app.should_receive(:call).with(env).and_return(parent_response)
+          subject
+        end
       end
+
+      context 'and the new-host is not set in the ignored options' do
+        it { should redirect.via(301) }
+        it { should redirect.to('http://new-host.com/test/path') }
+
+        it 'does not call further up the stack' do
+          parent_app.should_receive(:call).never
+          subject
+        end
+      end
+
     end
 
     context 'when initialized with a block' do
@@ -76,11 +90,11 @@ describe Rack::CanonicalHost do
     @parent_app ||= Proc.new { |env| parent_response }
   end
 
-  def stack(host = nil, parent_app = parent_app, &block)
+  def stack(host = nil, options={}, p = parent_app, &block)
     Rack::Builder.new do
       use Rack::Lint
-      use Rack::CanonicalHost, host, &block
-      run parent_app
+      use Rack::CanonicalHost, host, options, &block
+      run p
     end
   end
 end
