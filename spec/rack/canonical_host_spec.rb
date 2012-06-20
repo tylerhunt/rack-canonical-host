@@ -1,95 +1,73 @@
 require 'spec_helper'
 
 describe Rack::CanonicalHost do
-  context '#call' do
-    let(:requested_uri) { URI.parse('http://myapp.com/test/path') }
-    let(:env) { Rack::MockRequest.env_for(requested_uri.to_s) }
-    let(:response) { stack(requested_uri.host).call(env) }
+  let(:response) { [200, { 'Content-Type' => 'text/plain' }, 'OK'] }
+  let(:inner_app) { lambda { |env| response } }
 
-    subject { response }
+  def build_app(host=nil, options={}, inner_app=inner_app, &block)
+    Rack::Builder.new do
+      use Rack::Lint
+      use Rack::CanonicalHost, host, options, &block
+      run inner_app
+    end
+  end
 
+  shared_context 'matching and non-matching requests' do
     context 'with a request to a matching host' do
-      it { should_not redirect }
+      let(:url) { 'http://example.com/full/path' }
 
-      it 'calls up the stack with the received env' do
-        parent_app.should_receive(:call).with(env).and_return(parent_response)
+      it { should_not be_redirect }
+
+      it 'calls the inner app' do
+        inner_app.should_receive(:call).with(env).and_return(response)
         subject
       end
     end
 
     context 'with a request to a non-matching host' do
-      let(:response) { stack('new-host.com').call(env) }
+      let(:url) { 'http://www.example.com/full/path' }
 
-      context 'but the new-host is set in the ignored options' do
-        let(:response) { stack('new-host.com', { ignored_hosts: ["myapp.com"] }).call(env) }
+      it { should be_redirect.via(301).to('http://example.com/full/path') }
 
-        it { should_not redirect }
-
-        it 'calls up the stack with the received env' do
-          parent_app.should_receive(:call).with(env).and_return(parent_response)
-          subject
-        end
-      end
-
-      context 'and the new-host is not set in the ignored options' do
-        it { should redirect.via(301) }
-        it { should redirect.to('http://new-host.com/test/path') }
-
-        it 'does not call further up the stack' do
-          parent_app.should_receive(:call).never
-          subject
-        end
-      end
-
-    end
-
-    context 'when initialized with a block' do
-      let(:block) { Proc.new { |env| "block-host.com" } }
-      let(:response) { stack(&block).call(env) }
-
-      context 'with a request to a host matching the block result' do
-        let(:requested_uri) { URI.parse('http://block-host.com') }
-
-        it { should_not redirect }
-
-        it 'calls up the stack with the received env' do
-          parent_app.should_receive(:call).with(env).and_return(parent_response)
-          subject
-        end
-      end
-
-      context 'with a request host that does not match the block result' do
-        let(:requested_uri) { URI.parse('http://block-host.com') }
-        let(:env) { Rack::MockRequest.env_for('http://different-host.com/path') }
-
-        it { should redirect.via(301) }
-        it { should redirect.to('http://block-host.com/path') }
-
-        it 'does not call further up the stack' do
-          parent_app.should_receive(:call).never
-          subject
-        end
+      it 'does not call the inner app' do
+        inner_app.should_not_receive(:call)
+        subject
       end
     end
   end
 
+  context '#call' do
+    let(:env) { Rack::MockRequest.env_for(url) }
 
-  private
+    subject { app.call(env) }
 
+    context 'without any options' do
+      let(:app) { build_app('example.com') }
 
-  def parent_response
-    [200, {'Content-Type' => 'text/plain'}, 'Success']
-  end
+      include_context 'matching and non-matching requests'
+    end
 
-  def parent_app
-    @parent_app ||= Proc.new { |env| parent_response }
-  end
+    context 'with ignored hosts' do
+      let(:app) { build_app('example.com', ignored_hosts: ['example.net']) }
 
-  def stack(host = nil, options={}, p = parent_app, &block)
-    Rack::Builder.new do
-      use Rack::Lint
-      use Rack::CanonicalHost, host, options, &block
-      run p
+      include_context 'matching and non-matching requests'
+
+      context 'with a request to an ignored host' do
+        let(:url) { 'http://example.net/full/path' }
+
+        it { should_not be_redirect }
+
+        it 'calls the inner app' do
+          inner_app.should_receive(:call).with(env).and_return(response)
+          subject
+        end
+      end
+    end
+
+    context 'with a block' do
+      let(:app) { build_app { 'example.com' } }
+
+      include_context 'matching and non-matching requests'
     end
   end
 end
