@@ -82,3 +82,16 @@ use Rack::CanonicalHost do
   end
 end
 ```
+
+
+## Contributors
+
+Thanks to the following people who have contributed patches or helpful
+suggestions:
+
+  * [Peter Baker](http://github.com/finack)
+  * [Jon Wood](http://github.com/jellybob)
+  * [Nathaniel Bibler](http://github.com/nbibler)
+  * [Eric Allam](http://github.com/rubymaverick)
+
+
