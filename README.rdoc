@@ -18,6 +18,13 @@ Then, you can set up the middle are like this.
 
     use Rack::CanonicalHost, CANONICAL_HOST if defined?(CANONICAL_HOST)
 
+If you'd like the middleware to ignore certain hosts, you can pass in the :ignore_hosts
+options like so:
+
+    use Rack::CanonicalHost, CANONICAL_HOST, { ignored_hosts: ["api.example.com"] }
+
+In this case, requests with the server names example.com and api.example.com will not be redirected
+
 Alternatively, you can pass a block whose return value will be used to set the
 canonical host.
 
@@ -47,5 +54,6 @@ Then create the file config/initializers/canonical_host.rb to capture the config
     end
 
 You will need to restart your server to have this change take effect.
+
 
 Copyright (c) 2009 Tyler Hunt. See LICENSE for details.
