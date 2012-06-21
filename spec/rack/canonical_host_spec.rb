@@ -58,6 +58,14 @@ describe Rack::CanonicalHost do
       let(:app) { build_app('example.com') }
 
       include_context 'matching and non-matching requests'
+
+      context 'when the request has a pipe in the URL' do
+        let(:url) { 'https://example.com/full/path?value=withPIPE' }
+
+        before { env['QUERY_STRING'].sub!('PIPE', '|') }
+
+        it { expect { subject }.to_not raise_error }
+      end
     end
 
     context 'with :ignore option' do

@@ -43,7 +43,7 @@ module Rack
       private :new_url
 
       def request_uri
-        URI.parse(Rack::Request.new(@env).url)
+        URI.parse(Rack::Request.new(@env).url.gsub('|', '%7C'))
       end
       private :request_uri
     end
