@@ -89,6 +89,15 @@ end
 ```
 
 
+## Contributing
+
+  1. Fork it
+  2. Create your feature branch (`git checkout -b my-new-feature`)
+  3. Commit your changes (`git commit -am 'Add some feature.'`)
+  4. Push to the branch (`git push origin my-new-feature`)
+  5. Create a new Pull Request
+
+
 ## Contributors
 
 Thanks to the following people who have contributed patches or helpful
@@ -99,3 +108,9 @@ suggestions:
   * [Nathaniel Bibler](https://github.com/nbibler)
   * [Eric Allam](https://github.com/rubymaverick)
   * [Fabrizio Regini](https://github.com/freegenie)
+
+
+## Copyright
+
+Copyright © 2009-2012 Tyler Hunt.
+Released under the terms of the MIT license. See LICENSE for details.
