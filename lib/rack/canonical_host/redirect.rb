@@ -18,8 +18,8 @@ module Rack
         @ignore = options[:ignore]
       end
 
-      def known_host?
-        request_uri.host == @host || ignored?
+      def canonical?
+        known? || ignored?
       end
 
       def response
@@ -27,8 +27,13 @@ module Rack
         [301, headers, [HTML_TEMPLATE % new_url]]
       end
 
+      def known?
+        @host.nil? || request_uri.host == @host
+      end
+      private :known?
+
       def ignored?
-        @ignore.include?(request_uri.host) if @ignore
+        @ignore && @ignore.include?(request_uri.host)
       end
       private :ignored?
 

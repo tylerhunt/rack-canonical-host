@@ -1,5 +1,9 @@
 # Changelog
 
+## Rack::CanonicalHost 0.0.6 (Unreleased)
+
+  * Prevent redirect if the canonical host name is `nil`
+
 ## Rack::CanonicalHost 0.0.5
 
   * Rename `ignored_hosts` option to `ignore`

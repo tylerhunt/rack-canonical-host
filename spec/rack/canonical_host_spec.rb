@@ -12,7 +12,7 @@ describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'matching and non-matching requests' do
+  shared_context 'a matching request' do
     context 'with a request to a matching host' do
       let(:url) { 'http://example.com/full/path' }
 
@@ -23,7 +23,9 @@ describe Rack::CanonicalHost do
         subject
       end
     end
+  end
 
+  shared_context 'a non-matching request' do
     context 'with a request to a non-matching host' do
       let(:url) { 'http://www.example.com/full/path' }
 
@@ -36,10 +38,21 @@ describe Rack::CanonicalHost do
     end
   end
 
+  shared_context 'matching and non-matching requests' do
+    include_context 'a matching request'
+    include_context 'a non-matching request'
+  end
+
   context '#call' do
     let(:env) { Rack::MockRequest.env_for(url) }
 
     subject { app.call(env) }
+
+    context 'without a host' do
+      let(:app) { build_app(nil) }
+
+      include_context 'a matching request'
+    end
 
     context 'without any options' do
       let(:app) { build_app('example.com') }

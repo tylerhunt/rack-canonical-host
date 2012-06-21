@@ -14,7 +14,7 @@ module Rack
       host = host(env)
       redirect = Redirect.new(env, host, @options)
 
-      if redirect.known_host?
+      if redirect.canonical?
         @app.call(env)
       else
         redirect.response
