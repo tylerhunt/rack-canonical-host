@@ -1,6 +1,6 @@
 # Changelog
 
-## Rack::CanonicalHost 0.0.6 (Unreleased)
+## Rack::CanonicalHost 0.0.6
 
   * Prevent redirect if the canonical host name is `nil`
 
