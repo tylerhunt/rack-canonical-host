@@ -1,6 +1,6 @@
 # Changelog
 
-## Rack::CanonicalHost 0.0.7 (Unreleased)
+## Rack::CanonicalHost 0.0.7
 
   * Fix an issue handling URLs containing `|` characters
 
