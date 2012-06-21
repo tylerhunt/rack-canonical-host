@@ -94,9 +94,8 @@ end
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
-  * [Peter Baker](http://github.com/finack)
-  * [Jon Wood](http://github.com/jellybob)
-  * [Nathaniel Bibler](http://github.com/nbibler)
-  * [Eric Allam](http://github.com/rubymaverick)
-
-
+  * [Peter Baker](https://github.com/finack)
+  * [Jon Wood](https://github.com/jellybob)
+  * [Nathaniel Bibler](https://github.com/nbibler)
+  * [Eric Allam](https://github.com/rubymaverick)
+  * [Fabrizio Regini](https://github.com/freegenie)
