@@ -68,6 +68,12 @@ describe Rack::CanonicalHost do
       let(:app) { build_app { 'example.com' } }
 
       include_context 'matching and non-matching requests'
+
+      context 'that returns nil' do
+        let(:app) { build_app('example.com') { nil } }
+
+        include_context 'matching and non-matching requests'
+      end
     end
   end
 end
