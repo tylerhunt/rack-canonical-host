@@ -1,5 +1,9 @@
 # Changelog
 
+## Rack::CanonicalHost 0.0.8 (Unreleased)
+
+  * Switch to `Addressable::URI` for URI parsing
+
 ## Rack::CanonicalHost 0.0.7
 
   * Fix an issue handling URLs containing `|` characters

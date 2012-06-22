@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 module Rack
   class CanonicalHost
     class Redirect
@@ -43,7 +45,7 @@ module Rack
       private :new_url
 
       def request_uri
-        URI.parse(Rack::Request.new(@env).url.gsub('|', '%7C'))
+        Addressable::URI.parse(Rack::Request.new(@env).url)
       end
       private :request_uri
     end
