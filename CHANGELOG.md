@@ -1,6 +1,6 @@
 # Changelog
 
-## Rack::CanonicalHost 0.0.8 (Unreleased)
+## Rack::CanonicalHost 0.0.8
 
   * Switch to `Addressable::URI` for URI parsing
 
