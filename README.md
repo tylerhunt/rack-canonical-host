@@ -82,8 +82,8 @@ canonical host name.
 ``` ruby
 use Rack::CanonicalHost do
   case ENV['RACK_ENV'].to_sym
-    when :staging then 'example.com'
-    when :production then 'staging.example.com'
+    when :staging then 'staging.example.com'
+    when :production then 'example.com'
   end
 end
 ```
