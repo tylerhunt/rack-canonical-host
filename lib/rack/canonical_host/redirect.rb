@@ -17,11 +17,16 @@ module Rack
       def initialize(env, host, options={})
         @env = env
         @host = host
-        @ignore = options[:ignore]
+        @ignore = Array(options[:ignore])
+        @if = Array(options[:if])
       end
 
       def canonical?
-        known? || ignored?
+        if @if.size>0
+          known? || !conditions_match?
+        else
+          known? || ignored?
+        end
       end
 
       def response
@@ -38,6 +43,16 @@ module Rack
         @ignore && @ignore.include?(request_uri.host)
       end
       private :ignored?
+
+      def conditions_match?
+        @if.include?( request_uri.host ) || any_regexp_match?( @if, request_uri.host )
+      end
+      private :conditions_match?
+
+      def any_regexp_match?( regexp_array, string )
+        regexp_array.o.any?{ |r| string[r] }
+      end
+      private :any_regexp_match?
 
       def new_url
         request_uri.tap { |uri| uri.host = @host }.to_s

@@ -88,6 +88,13 @@ use Rack::CanonicalHost do
 end
 ```
 
+If you want it to react on only specific host for multi-domain environment use `:if`.
+It accepts string, regexp or an array.
+
+``` ruby
+use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
+use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
+```
 
 ## Contributing
 
