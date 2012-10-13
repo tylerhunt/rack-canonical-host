@@ -50,7 +50,7 @@ module Rack
       private :conditions_match?
 
       def any_regexp_match?( regexp_array, string )
-        regexp_array.o.any?{ |r| string[r] }
+        regexp_array.any?{ |r| string[r] }
       end
       private :any_regexp_match?
 
