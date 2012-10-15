@@ -22,11 +22,7 @@ module Rack
       end
 
       def canonical?
-        if @if.size>0
-          known? || !conditions_match?
-        else
-          known? || ignored?
-        end
+          known? || ignored? || !conditions_match?
       end
 
       def response
@@ -45,6 +41,7 @@ module Rack
       private :ignored?
 
       def conditions_match?
+        return true unless @if.size > 0
         @if.include?( request_uri.host ) || any_regexp_match?( @if, request_uri.host )
       end
       private :conditions_match?
