@@ -69,7 +69,7 @@ describe Rack::CanonicalHost do
     end
 
     context 'with :ignore option' do
-      let(:app) { build_app('example.com', :ignore => ['example.net']) }
+      let(:app) { build_app('example.com', :ignore => 'example.net') }
 
       include_context 'matching and non-matching requests'
 
@@ -83,6 +83,38 @@ describe Rack::CanonicalHost do
           subject
         end
       end
+    end
+
+    context 'with :if option' do
+
+      let(:app) { build_app('example.com', :if => 'www.example.net') }
+
+      context 'with a request to a :if matching host' do
+        let(:url) { 'http://www.example.net/full/path' }
+        it { should be_redirect.to('http://example.com/full/path') }
+      end
+
+      context 'with a request to a :if non-matching host' do
+        let(:url) { 'http://www.sexample.net/full/path' }
+        it { should_not be_redirect }
+      end
+
+    end
+
+    context 'with :if and regexp as an option' do
+
+      let(:app) { build_app('example.com', :if => /.*\.example\.net/) }
+
+      context 'with a request to a :if matching host' do
+        let(:url) { 'http://subdomain.example.net/full/path' }
+        it { should be_redirect.to('http://example.com/full/path') }
+      end
+
+      context 'with a request to a :if non-matching host' do
+        let(:url) { 'http://example.net/full/path' }
+        it { should_not be_redirect }
+      end
+
     end
 
     context 'with a block' do
