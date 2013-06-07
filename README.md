@@ -80,8 +80,8 @@ Alternatively, you can pass a block whose return value will be used as the
 canonical host name.
 
 ``` ruby
-use Rack::CanonicalHost do
-  case ENV['RACK_ENV'].to_sym
+use Rack::CanonicalHost do |env|
+  case env['RACK_ENV'].to_sym
     when :staging then 'staging.example.com'
     when :production then 'example.com'
   end
