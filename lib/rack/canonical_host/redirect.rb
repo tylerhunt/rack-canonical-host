@@ -30,15 +30,15 @@ module Rack
         [301, headers, [HTML_TEMPLATE % new_url]]
       end
 
+    private
+
       def known?
         @host.nil? || request_uri.host == @host
       end
-      private :known?
 
       def ignored?
         @ignore && @ignore.include?(request_uri.host)
       end
-      private :ignored?
 
       def conditions_match?
         return true unless @if.size > 0
@@ -54,12 +54,10 @@ module Rack
       def new_url
         request_uri.tap { |uri| uri.host = @host }.to_s
       end
-      private :new_url
 
       def request_uri
         Addressable::URI.parse(Rack::Request.new(@env).url)
       end
-      private :request_uri
     end
   end
 end

@@ -21,9 +21,10 @@ module Rack
       end
     end
 
+  private
+
     def host(env)
       @block ? @block.call(env) || @host : @host
     end
-    private :host
   end
 end
