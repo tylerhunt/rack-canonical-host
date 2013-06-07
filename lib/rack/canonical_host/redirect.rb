@@ -3,7 +3,7 @@ require 'addressable/uri'
 module Rack
   class CanonicalHost
     class Redirect
-      HTML_TEMPLATE = <<-HTML
+      HTML_TEMPLATE = <<-HTML.gsub(/^\s+/, '')
         <!DOCTYPE html>
         <html lang="en-US">
           <head><title>301 Moved Permanently</title></head>
