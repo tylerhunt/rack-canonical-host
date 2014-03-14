@@ -1,5 +1,6 @@
 require 'rack'
 require 'rack/canonical_host/redirect'
+require 'rack/canonical_host/version'
 
 module Rack
   class CanonicalHost
