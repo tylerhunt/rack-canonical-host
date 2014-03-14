@@ -111,10 +111,11 @@ use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
-  * [Peter Baker](https://github.com/finack)
+  * [Joost Schuur](https://github.com/jellybob)
   * [Jon Wood](https://github.com/jellybob)
+  * [Peter Baker](https://github.com/finack)
   * [Nathaniel Bibler](https://github.com/nbibler)
-  * [Eric Allam](https://github.com/rubymaverick)
+  * [Eric Allam](https://github.com/ericallam)
   * [Fabrizio Regini](https://github.com/freegenie)
 
 

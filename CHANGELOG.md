@@ -1,40 +1,50 @@
 # Changelog
 
-## Rack::CanonicalHost 0.0.8
+## Unreleased
 
-  * Switch to `Addressable::URI` for URI parsing
+  * Add `:if` option ([Nick Ostrovsky][firedev])
+  * Improve documentation ([Joost Schuur][jschuur])
 
-## Rack::CanonicalHost 0.0.7
+## 0.0.8 (2012-06-22)
 
-  * Fix an issue handling URLs containing `|` characters
+  * Switch to `Addressable::URI` for URI parsing ([Tyler Hunt][tylerhunt])
 
-## Rack::CanonicalHost 0.0.6
+## 0.0.7 (2012-06-21)
 
-  * Prevent redirect if the canonical host name is `nil`
+  * Fix handling of URLs containing `|` characters ([Tyler Hunt][tylerhunt])
 
-## Rack::CanonicalHost 0.0.5
+## 0.0.6 (2012-06-21)
 
-  * Rename `ignored_hosts` option to `ignore`
+  * Prevent redirect if the canonical host is `nil` ([Tyler Hunt][tylerhunt])
 
-## Rack::CanonicalHost 0.0.4
+## 0.0.5 (2012-06-21)
+
+  * Rename `ignored_hosts` option to `ignore` ([Tyler Hunt][tylerhunt])
+
+## 0.0.4 (2012-06-20)
 
   * Add option to ignored certain hosts ([Eric Allam][rubymaverick])
   * Add tests ([Nathaniel Bibler][nbibler])
   * Add HTML response body on redirect
   * Set `Content-Type` header on redirect ([Jon Wood][jellybob])
+  * Improve documentation ([Peter Baker][finack])
 
-## Rack::CanonicalHost 0.0.3
+## 0.0.3 (2011-02-09)
 
-  * Allow `env` to be passed to the optional block
+  * Allow `env` to be passed to the optional block ([Tyler Hunt][tylerhunt])
 
-## Rack::CanonicalHost 0.0.2
+## 0.0.2 (2010-11-18)
 
-  * Move `CanonicalHost` into `Rack` namespace
+  * Move `CanonicalHost` into `Rack` namespace ([Tyler Hunt][tylerhunt])
 
-## Rack::CanonicalHost 0.0.1
+## 0.0.1 (2009-11-04)
 
-  * Initial release
+  * Initial release ([Tyler Hunt][tylerhunt])
 
+[finack]: http://github.com/finack
+[firedev]: http://github.com/firedev
 [jellybob]: http://github.com/jellybob
+[jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
-[rubymaverick]: http://github.com/rubymaverick
+[rubymaverick]: http://github.com/ericallam
+[tylerhunt]: http://github.com/tylerhunt
