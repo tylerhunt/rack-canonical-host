@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.9 (2014-02-14)
 
   * Add `:if` option ([Nick Ostrovsky][firedev])
   * Improve documentation ([Joost Schuur][jschuur])
