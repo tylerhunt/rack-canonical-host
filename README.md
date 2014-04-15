@@ -96,6 +96,15 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
+If you'd like to enforce the use of HTTPS, use the `:force_ssl` option:
+
+``` ruby
+use Rack::CanonicalHost, 'example.com', force_ssl: true
+```
+
+In this case, requests like `http://example.com` will be redirected to
+`https://example.com`.
+
 
 ## Contributing
 
