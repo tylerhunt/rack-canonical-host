@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 (2014-04-16)
 
   * Add `:force_ssl` option ([Jeff Carbonella][jcarbo])
 
