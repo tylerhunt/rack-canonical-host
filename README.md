@@ -120,6 +120,7 @@ In this case, requests like `http://example.com` will be redirected to
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
+  * [Jeff Carbonella](https://github.com/jcarbo)
   * [Joost Schuur](https://github.com/jellybob)
   * [Jon Wood](https://github.com/jellybob)
   * [Peter Baker](https://github.com/finack)

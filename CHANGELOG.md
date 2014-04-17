@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Add `:force_ssl` option ([Jeff Carbonella][jcarbo])
+
 ## 0.0.9 (2014-02-14)
 
   * Add `:if` option ([Nick Ostrovsky][firedev])
@@ -41,6 +45,7 @@
 
   * Initial release ([Tyler Hunt][tylerhunt])
 
+[jcarbo]: http://github.com/jcarbo
 [finack]: http://github.com/finack
 [firedev]: http://github.com/firedev
 [jellybob]: http://github.com/jellybob
