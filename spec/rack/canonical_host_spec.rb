@@ -145,6 +145,24 @@ describe Rack::CanonicalHost do
       end
     end
 
+    context 'with :query_values option' do
+      let(:app) { build_app('example.com', :query_values => {:name => :value, "key" => 123})}
+      
+      context 'with plain requests' do
+        ['http://my-site.com', 'http://my-site.com/', 'http://my-site.com/?'].each do |url|
+          let(:url) { url }
+          it { should be_redirect.to('http://example.com/?key=123&name=value') }
+        end
+      end
+      
+      context 'with existing query strings' do
+        ['http://my-site.com?a=b', 'http://my-site.com/?a=b', 'http://my-site.com/?a=b&'].each do |url|
+          let(:url) { url }
+          it { should be_redirect.to('http://example.com/?a=b&key=123&name=value') }
+        end
+      end
+    end
+
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 
