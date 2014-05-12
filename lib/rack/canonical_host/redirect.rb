@@ -20,6 +20,7 @@ module Rack
         @force_ssl = options[:force_ssl]
         @ignore = Array(options[:ignore])
         @if = Array(options[:if])
+        @query_values = options[:query_values]
       end
 
       def canonical?
@@ -60,6 +61,7 @@ module Rack
         request_uri.tap { |uri|
           uri.host = @host if @host
           uri.scheme = "https" if @force_ssl
+          uri.query_values = (uri.query_values || {}).update(@query_values) if @query_values
         }.to_s
       end
 

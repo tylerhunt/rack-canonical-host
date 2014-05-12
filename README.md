@@ -105,6 +105,12 @@ use Rack::CanonicalHost, 'example.com', force_ssl: true
 In this case, requests like `http://example.com` will be redirected to
 `https://example.com`.
 
+If you'd like to put something in the querystring, perhaps so that the destination host can be sure that it received a redirect, use the `:query_values` option:
+
+```ruby
+use Rack::CanonicalHost, 'example.com', query_values: {redirected: 1}
+# your-site.com/page will redirect to example.com/page?redirected=1
+```
 
 ## Contributing
 
