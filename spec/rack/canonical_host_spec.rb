@@ -19,7 +19,7 @@ describe Rack::CanonicalHost do
       it { should_not be_redirect }
 
       it 'calls the inner app' do
-        inner_app.should_receive(:call).with(env).and_return(response)
+        expect(inner_app).to receive(:call).with(env).and_return(response)
         subject
       end
     end
@@ -32,7 +32,7 @@ describe Rack::CanonicalHost do
       it { should be_redirect.via(301).to('http://example.com/full/path') }
 
       it 'does not call the inner app' do
-        inner_app.should_not_receive(:call)
+        expect(inner_app).not_to receive(:call)
         subject
       end
     end
@@ -79,7 +79,7 @@ describe Rack::CanonicalHost do
         it { should_not be_redirect }
 
         it 'calls the inner app' do
-          inner_app.should_receive(:call).with(env).and_return(response)
+          expect(inner_app).to receive(:call).with(env).and_return(response)
           subject
         end
       end

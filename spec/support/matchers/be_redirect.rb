@@ -34,11 +34,11 @@ module BeRedirect
       end
     end
 
-    def failure_message_for_should
+    def failure_message
       "Expected response to #{description}"
     end
 
-    def failure_message_for_should_not
+    def failure_message_when_negated
       "Did not expect response to #{description}"
     end
 
