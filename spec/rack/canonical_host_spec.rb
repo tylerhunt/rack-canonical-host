@@ -32,7 +32,7 @@ describe Rack::CanonicalHost do
       it { should be_redirect.via(301).to('http://example.com/full/path') }
 
       it 'does not call the inner app' do
-        expect(inner_app).not_to receive(:call)
+        expect(inner_app).to_not receive(:call)
         subject
       end
     end
