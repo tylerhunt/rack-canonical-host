@@ -54,6 +54,23 @@ describe Rack::CanonicalHost do
       include_context 'a matching request'
     end
 
+    context 'with an X-Forwarded-Host' do
+      let(:app) { build_app('example.com') }
+      let(:url) { 'http://proxied.url/full/path' }
+
+      context 'which matches the canonical host' do
+        let(:env) { Rack::MockRequest.env_for(url, 'HTTP_X_FORWARDED_HOST' => 'example.com:80') }
+
+        include_context 'a matching request'
+      end
+
+      context 'which does not match the canonical host' do
+        let(:env) { Rack::MockRequest.env_for(url, 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80') }
+
+        include_context 'a non-matching request'
+      end
+    end
+
     context 'without any options' do
       let(:app) { build_app('example.com') }
 
