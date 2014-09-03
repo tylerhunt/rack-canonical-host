@@ -6,8 +6,9 @@ end
 
 RSpec.configure do |config|
   config.filter_run :focus
-  config.order = :random
   config.run_all_when_everything_filtered = true
+
+  config.order = :random
   Kernel.srand config.seed
 
   if config.files_to_run.one?
