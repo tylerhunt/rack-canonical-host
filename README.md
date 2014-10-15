@@ -75,6 +75,12 @@ use Rack::CanonicalHost, 'example.com', ignore: ['api.example.com']
 
 In this case, requests for the host `api.example.com` will not be redirected.
 
+You can also pass in regular expressions to `:ignore`:
+
+``` ruby
+use Rack::CanonicalHost, 'example.com', ignore: [/\Aapi\.(?:.*)\.com\z/]
+```
+
 Alternatively, you can pass a block whose return value will be used as the
 canonical host name.
 
@@ -104,6 +110,13 @@ use Rack::CanonicalHost, 'example.com', force_ssl: true
 In this case, requests like `http://example.com` will be redirected to
 `https://example.com`.
 
+If the `:ignore` option is present, then `force_ssl` will not take effect for
+ignored hosts.  If you want to always force SSL, even for ignored hosts, pass
+`force_ssl: :always`:
+
+``` ruby
+use Rack::CanonicalHost, 'example.com', ignore: 'example.net', force_ssl: :always
+```
 
 ## Contributing
 

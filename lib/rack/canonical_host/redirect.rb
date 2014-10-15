@@ -23,7 +23,7 @@ module Rack
       end
 
       def canonical?
-        (known? && ssl?) || ignored? || !conditions_match?
+        ((known? && ssl?) || ignored? || !conditions_match?) && ssl_always?
       end
 
       def response
@@ -41,8 +41,12 @@ module Rack
         !@force_ssl || request_uri.scheme == "https"
       end
 
+      def ssl_always?
+        @force_ssl != :always || request_uri.scheme == "https"
+      end
+
       def ignored?
-        @ignore && @ignore.include?(request_uri.host)
+        @ignore.include?(request_uri.host) || any_regexp_match?( @ignore, request_uri.host )
       end
 
       def conditions_match?
@@ -58,7 +62,7 @@ module Rack
 
       def new_url
         request_uri.tap { |uri|
-          uri.host = @host if @host
+          uri.host = @host if @host && !ignored?
           uri.scheme = "https" if @force_ssl
         }.to_s
       end
