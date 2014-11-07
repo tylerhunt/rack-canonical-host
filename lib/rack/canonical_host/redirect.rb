@@ -64,7 +64,7 @@ module Rack
       end
 
       def request_uri
-        Addressable::URI.parse(Rack::Request.new(@env).url)
+        @request_uri ||= Addressable::URI.parse(Rack::Request.new(@env).url)
       end
     end
   end
