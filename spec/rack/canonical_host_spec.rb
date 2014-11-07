@@ -102,6 +102,23 @@ describe Rack::CanonicalHost do
       end
     end
 
+    context 'with :ignore option set to regex' do
+      let(:app) { build_app('example.com', :ignore => /\.net\z/) }
+
+      include_context 'matching and non-matching requests'
+
+      context 'with a request to an ignored host' do
+        let(:url) { 'http://example.net/full/path' }
+
+        it { should_not be_redirect }
+
+        it 'calls the inner app' do
+          expect(inner_app).to receive(:call).with(env).and_return(response)
+          subject
+        end
+      end
+    end
+
     context 'with :if option' do
 
       let(:app) { build_app('example.com', :if => 'www.example.net') }
@@ -135,7 +152,9 @@ describe Rack::CanonicalHost do
     end
 
     context 'with :force_ssl option' do
-      let(:app) { build_app('example.com', :force_ssl => true) }
+      let(:app) { build_app(host, :ignore => 'example.net', :force_ssl => force_ssl) }
+      let(:host) { 'example.com' }
+      let(:force_ssl) { true }
 
       context 'with a non-ssl request' do
         let(:url) { 'http://example.com/full/path' }
@@ -147,18 +166,52 @@ describe Rack::CanonicalHost do
         it { should_not be_redirect }
       end
 
+      context 'with a non-ssl request to an ignored host' do
+        let(:url) { 'http://example.net/full/path' }
+        it { should_not be_redirect }
+      end
+
       context 'when host is not set' do
-        let(:app) { build_app(nil, :force_ssl => true) }
+        let(:host) { nil }
         let(:url) { 'http://example.com/full/path' }
 
         it { should be_redirect.to('https://example.com/full/path') }
       end
 
       context 'when :forse_ssl is false' do
-        let(:app) { build_app('example.com', :force_ssl => false) }
+        let(:force_ssl) { false }
         let(:url) { 'http://example.com/full/path' }
 
         it { should_not be_redirect }
+      end
+
+      context 'when :force_ssl is :always' do
+        let(:force_ssl) { :always }
+
+        context 'with an ssl request to canonical url' do
+          let(:url) { 'https://example.com/full/path' }
+          it { should_not be_redirect }
+        end
+        context 'with an ssl request to ignored url' do
+          let(:url) { 'https://example.net/full/path' }
+          it { should_not be_redirect }
+        end
+        context 'with an ssl request to non-canonical url' do
+          let(:url) { 'https://example.org/full/path' }
+          it { should be_redirect.to('https://example.com/full/path')}
+        end
+        context 'with a non-ssl request to canonical url' do
+          let(:url) { 'http://example.com/full/path' }
+          it { should be_redirect.to('https://example.com/full/path')}
+        end
+        context 'with a non-ssl request to ignored url' do
+          let(:url) { 'http://example.net/full/path' }
+          it { should be_redirect.to('https://example.net/full/path')}
+        end
+        context 'with a non-ssl request to non-canonical url' do
+          let(:url) { 'http://example.org/full/path' }
+          it { should be_redirect.to('https://example.com/full/path')}
+        end
       end
     end
 
