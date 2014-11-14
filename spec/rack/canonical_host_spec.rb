@@ -134,34 +134,6 @@ describe Rack::CanonicalHost do
 
     end
 
-    context 'with :force_ssl option' do
-      let(:app) { build_app('example.com', :force_ssl => true) }
-
-      context 'with a non-ssl request' do
-        let(:url) { 'http://example.com/full/path' }
-        it { should be_redirect.to('https://example.com/full/path') }
-      end
-
-      context 'with an ssl request' do
-        let(:url) { 'https://example.com/full/path' }
-        it { should_not be_redirect }
-      end
-
-      context 'when host is not set' do
-        let(:app) { build_app(nil, :force_ssl => true) }
-        let(:url) { 'http://example.com/full/path' }
-
-        it { should be_redirect.to('https://example.com/full/path') }
-      end
-
-      context 'when :forse_ssl is false' do
-        let(:app) { build_app('example.com', :force_ssl => false) }
-        let(:url) { 'http://example.com/full/path' }
-
-        it { should_not be_redirect }
-      end
-    end
-
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 

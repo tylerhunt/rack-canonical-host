@@ -17,13 +17,12 @@ module Rack
       def initialize(env, host, options={})
         @env = env
         @host = host
-        @force_ssl = options[:force_ssl]
         @ignore = Array(options[:ignore])
         @if = Array(options[:if])
       end
 
       def canonical?
-        (known? && ssl?) || ignored? || !conditions_match?
+        known? || ignored? || !conditions_match?
       end
 
       def response
@@ -35,10 +34,6 @@ module Rack
 
       def known?
         @host.nil? || request_uri.host == @host
-      end
-
-      def ssl?
-        !@force_ssl || request_uri.scheme == "https"
       end
 
       def ignored?
@@ -57,10 +52,7 @@ module Rack
       private :any_regexp_match?
 
       def new_url
-        request_uri.tap { |uri|
-          uri.host = @host if @host
-          uri.scheme = "https" if @force_ssl
-        }.to_s
+        request_uri.tap { |uri| uri.host = @host }.to_s
       end
 
       def request_uri

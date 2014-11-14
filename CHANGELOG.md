@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+  * Remove `:force_ssl` option in favor of using [rack-ssl][rack-ssl].
+
 ## 0.1.0 (2014-04-16)
 
   * Add `:force_ssl` option ([Jeff Carbonella][jcarbo])
@@ -45,11 +49,12 @@
 
   * Initial release ([Tyler Hunt][tylerhunt])
 
-[jcarbo]: http://github.com/jcarbo
 [finack]: http://github.com/finack
 [firedev]: http://github.com/firedev
+[jcarbo]: http://github.com/jcarbo
 [jellybob]: http://github.com/jellybob
 [jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
+[rack-ssl]: http://rubygems.org/gems/rack-ssl
 [rubymaverick]: http://github.com/ericallam
 [tylerhunt]: http://github.com/tylerhunt
