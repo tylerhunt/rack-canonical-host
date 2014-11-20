@@ -120,5 +120,6 @@ suggestions:
 
 ## Copyright
 
-Copyright © 2009-2012 Tyler Hunt.
+Copyright © 2009-2014 Tyler Hunt.
+
 Released under the terms of the MIT license. See LICENSE for details.
