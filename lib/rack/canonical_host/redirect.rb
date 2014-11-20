@@ -1,4 +1,5 @@
 require 'addressable/uri'
+require 'rack'
 
 module Rack
   class CanonicalHost
@@ -15,48 +16,64 @@ module Rack
       HTML
 
       def initialize(env, host, options={})
-        @env = env
-        @host = host
-        @ignore = Array(options[:ignore])
-        @if = Array(options[:if])
+        self.env = env
+        self.host = host
+        self.ignore = Array(options[:ignore])
+        self.conditions = Array(options[:if])
       end
 
       def canonical?
-        known? || ignored? || !conditions_match?
+        return true unless enabled?
+        known? || ignored?
       end
 
       def response
-        headers = { 'Location' => new_url, 'Content-Type' => 'text/html' }
         [301, headers, [HTML_TEMPLATE % new_url]]
       end
 
+    protected
+
+      attr_accessor :env
+      attr_accessor :host
+      attr_accessor :ignore
+      attr_accessor :conditions
+
     private
 
-      def known?
-        @host.nil? || request_uri.host == @host
+      def any_match?(patterns, string)
+        patterns.any? { |pattern| string[pattern] }
+      end
+
+      def headers
+        {
+          'Location' => new_url,
+          'Content-Type' => 'text/html',
+        }
+      end
+
+      def enabled?
+        return true if conditions.empty?
+
+        conditions.include?(request_uri.host) ||
+          any_match?(conditions, request_uri.host)
       end
 
       def ignored?
-        @ignore && @ignore.include?(request_uri.host)
+        ignore.include?(request_uri.host)
       end
 
-      def conditions_match?
-        return true unless @if.size > 0
-        @if.include?( request_uri.host ) || any_regexp_match?( @if, request_uri.host )
+      def known?
+        host.nil? || request_uri.host == host
       end
-      private :conditions_match?
-
-      def any_regexp_match?( regexp_array, string )
-        regexp_array.any?{ |r| string[r] }
-      end
-      private :any_regexp_match?
 
       def new_url
-        request_uri.tap { |uri| uri.host = @host }.to_s
+        uri = request_uri.dup
+        uri.host = host
+        uri.to_s
       end
 
       def request_uri
-        @request_uri ||= Addressable::URI.parse(Rack::Request.new(@env).url)
+        @request_uri ||= Addressable::URI.parse(Rack::Request.new(env).url)
       end
     end
   end

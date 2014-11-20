@@ -5,27 +5,34 @@ require 'rack/canonical_host/version'
 module Rack
   class CanonicalHost
     def initialize(app, host=nil, options={}, &block)
-      @app = app
-      @host = host
-      @options = options
-      @block = block
+      self.app = app
+      self.host = host
+      self.options = options
+      self.block = block
     end
 
     def call(env)
-      host = host(env)
-      redirect = Redirect.new(env, host, @options)
+      host = evaluate_host(env)
+      redirect = Redirect.new(env, host, options)
 
       if redirect.canonical?
-        @app.call(env)
+        app.call(env)
       else
         redirect.response
       end
     end
 
+  protected
+
+    attr_accessor :app
+    attr_accessor :host
+    attr_accessor :options
+    attr_accessor :block
+
   private
 
-    def host(env)
-      @block ? @block.call(env) || @host : @host
+    def evaluate_host(env)
+      block and block.call(env) or host
     end
   end
 end
