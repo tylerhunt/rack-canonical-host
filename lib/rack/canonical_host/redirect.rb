@@ -69,7 +69,7 @@ module Rack
       def new_url
         uri = request_uri.dup
         uri.host = host
-        uri.to_s
+        uri.normalize.to_s
       end
 
       def request_uri
