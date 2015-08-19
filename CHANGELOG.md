@@ -1,8 +1,12 @@
 # Changelog
 
-## unreleased
+## Unreleased
 
-  * Remove `:force_ssl` option in favor of using [rack-ssl][rack-ssl].
+  * Normalize redirect URL to avoid XSS vulnerability ([Thomas Maurer][tma])
+  * Remove `:force_ssl` option in favor of using [rack-ssl][rack-ssl]
+    ([Nathaniel Bibler][nbibler])
+
+[rack-ssl]: http://rubygems.org/gems/rack-ssl
 
 ## 0.1.0 (2014-04-16)
 
@@ -55,6 +59,6 @@
 [jellybob]: http://github.com/jellybob
 [jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
-[rack-ssl]: http://rubygems.org/gems/rack-ssl
 [rubymaverick]: http://github.com/ericallam
+[tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
