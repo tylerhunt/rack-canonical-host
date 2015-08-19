@@ -145,5 +145,18 @@ describe Rack::CanonicalHost do
         include_context 'matching and non-matching requests'
       end
     end
+
+    context 'with URL containing JavaScript XSS' do
+      let(:url) { 'http://subdomain.example.net/full/path' }
+      let(:env) do
+        Rack::MockRequest.env_for(url).tap do |env|
+          env[Rack::QUERY_STRING] = '"><script>alert(73541);</script>'
+        end
+      end
+
+      let(:app) { build_app('example.com') }
+
+      it { should be_redirect.to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E') }
+    end
   end
 end
