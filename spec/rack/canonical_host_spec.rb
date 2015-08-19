@@ -150,7 +150,7 @@ describe Rack::CanonicalHost do
       let(:url) { 'http://subdomain.example.net/full/path' }
       let(:env) do
         Rack::MockRequest.env_for(url).tap do |env|
-          env[Rack::QUERY_STRING] = '"><script>alert(73541);</script>'
+          env['QUERY_STRING'] = '"><script>alert(73541);</script>'
         end
       end
 
