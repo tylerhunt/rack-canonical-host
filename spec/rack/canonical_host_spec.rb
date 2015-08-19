@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rack::CanonicalHost do
-  let(:response) { [200, { 'Content-Type' => 'text/plain' }, 'OK'] }
+  let(:response) { [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
   let(:inner_app) { lambda { |env| response } }
 
   def build_app(host=nil, options={}, inner_app=inner_app(), &block)
