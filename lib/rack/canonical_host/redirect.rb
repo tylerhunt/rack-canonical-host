@@ -18,6 +18,7 @@ module Rack
       def initialize(env, host, options={})
         self.env = env
         self.host = host
+        self.protocol = options[:protocol]
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
       end
@@ -37,6 +38,7 @@ module Rack
       attr_accessor :host
       attr_accessor :ignore
       attr_accessor :conditions
+      attr_accessor :protocol
 
     private
 
@@ -69,6 +71,7 @@ module Rack
       def new_url
         uri = request_uri.dup
         uri.host = host
+        uri.scheme = protocol unless protocol.nil?
         uri.normalize.to_s
       end
 

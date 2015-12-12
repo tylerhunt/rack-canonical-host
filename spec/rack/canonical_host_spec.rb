@@ -102,6 +102,15 @@ describe Rack::CanonicalHost do
       end
     end
 
+    context 'with :protocol option set to https' do
+      let(:app) { build_app('example.com', :protocol => 'https') }
+
+      context 'with a request to some path without http' do
+        let(:url) { 'http://example.net/full/path' }
+        it { should be_redirect.to('https://example.com/full/path') }
+      end
+    end
+
     context 'with :if option' do
 
       let(:app) { build_app('example.com', :if => 'www.example.net') }
