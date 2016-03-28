@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2016-03-28)
 
   * Normalize redirect URL to avoid XSS vulnerability ([Thomas Maurer][tma])
   * Remove `:force_ssl` option in favor of using [rack-ssl][rack-ssl]
