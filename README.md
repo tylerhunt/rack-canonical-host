@@ -109,6 +109,7 @@ use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
+  * [Tyler Ewing](https://github.com/zoso10)
   * [Thomas Maurer](https://github.com/tma)
   * [Jeff Carbonella](https://github.com/jcarbo)
   * [Joost Schuur](https://github.com/jellybob)

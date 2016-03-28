@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Relax Rack dependency to allow for Rack 2 ([Tyler Ewing][zoso10])
+
 ## 0.2.0 (2016-03-28)
 
   * Normalize redirect URL to avoid XSS vulnerability ([Thomas Maurer][tma])
@@ -62,3 +66,4 @@
 [rubymaverick]: http://github.com/ericallam
 [tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
+[zoso10]: http://github.com/zoso10
