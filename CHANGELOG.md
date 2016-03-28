@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 (2016-03-28)
 
   * Relax Rack dependency to allow for Rack 2 ([Tyler Ewing][zoso10])
 
