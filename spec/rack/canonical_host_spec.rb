@@ -35,6 +35,10 @@ describe Rack::CanonicalHost do
         expect(inner_app).to_not receive(:call)
         subject
       end
+
+      it 'includes a cache expiry' do
+        expect(subject).to have_header('Cache-Control').with('max-age=3600')
+      end
     end
   end
 
@@ -132,6 +136,34 @@ describe Rack::CanonicalHost do
         it { should_not be_redirect }
       end
 
+    end
+
+    context 'with a :cache_expiry option' do
+      let(:url) { 'http://subdomain.example.net/full/path' }
+
+      context 'that is a number' do
+        let(:app) { build_app('example.com', :cache_expiry => 42) }
+
+        it 'is treated as the max-age value' do
+          expect(subject).to have_header('Cache-Control').with('max-age=42')
+        end
+      end
+
+      context 'that is a string' do
+        let(:app) { build_app('example.com', :cache_expiry => 'no-cache') }
+
+        it 'passes the value to the Cache-Control header' do
+          expect(subject).to have_header('Cache-Control').with('no-cache')
+        end
+      end
+
+      context 'that is false' do
+        let(:app) { build_app('example.com', :cache_expiry => false) }
+
+        it 'disables the Cache-Control header' do
+          expect(subject).not_to have_header('Cache-Control')
+        end
+      end
     end
 
     context 'with a block' do
