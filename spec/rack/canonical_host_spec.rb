@@ -192,6 +192,15 @@ RSpec.describe Rack::CanonicalHost do
       end
     end
 
+    context 'with :temporary option' do
+      let(:app) { build_app('example.com', :temporary => true) }
+      let(:url) { 'http://example.net/full/path' }
+
+      context 'with a request to a non-matching host' do
+        it { should redirect_to('http://example.com/full/path').via(302) }
+      end
+    end
+
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 

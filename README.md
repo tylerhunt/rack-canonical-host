@@ -95,6 +95,7 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
+<<<<<<< HEAD
 ### Cache-Control
 
 To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea
@@ -110,6 +111,15 @@ use Rack::CanonicalHost, 'example.com', cache_control: 'max-age=3600'
 
 # Prevent caching of redirects:
 use Rack::CanonicalHost, 'example.com', cache_control: 'no-cache'
+```
+
+### Temporary redirection
+
+If you want a temporary redirect (302) rather than a permanent redirect (301),
+pass the `:temporary` option.
+
+```ruby
+use Rack::CanonicalHost, 'example.com', temporary: true
 ```
 
 ## Contributing

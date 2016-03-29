@@ -21,6 +21,7 @@ module Rack
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
+        self.status = options[:temporary] ? 302 : 301
       end
 
       def canonical?
@@ -29,7 +30,7 @@ module Rack
       end
 
       def response
-        [301, headers, [HTML_TEMPLATE % new_url]]
+        [status, headers, [HTML_TEMPLATE % new_url]]
       end
 
     protected
@@ -39,6 +40,7 @@ module Rack
       attr_accessor :ignore
       attr_accessor :conditions
       attr_accessor :cache_control
+      attr_accessor :status
 
     private
 
