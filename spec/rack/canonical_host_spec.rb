@@ -1,8 +1,13 @@
-require 'spec_helper'
-
-describe Rack::CanonicalHost do
-  let(:response) { [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
+RSpec.describe Rack::CanonicalHost do
+  let(:app_response) { [200, { 'Content-Type' => 'text/plain' }, %w(OK)] }
   let(:inner_app) { lambda { |env| response } }
+
+  before do
+    allow(inner_app)
+      .to receive(:call)
+      .with(env)
+      .and_return(app_response)
+  end
 
   def build_app(host=nil, options={}, inner_app=inner_app(), &block)
     Rack::Builder.new do
@@ -19,8 +24,8 @@ describe Rack::CanonicalHost do
       it { should_not be_redirect }
 
       it 'calls the inner app' do
-        expect(inner_app).to receive(:call).with(env).and_return(response)
-        subject
+        expect(inner_app).to receive(:call).with(env)
+        call_app
       end
     end
   end
@@ -33,12 +38,10 @@ describe Rack::CanonicalHost do
 
       it 'does not call the inner app' do
         expect(inner_app).to_not receive(:call)
-        subject
+        call_app
       end
 
-      it 'does not include a Cache-Control header' do
-        expect(subject).to_not have_header('Cache-Control')
-      end
+      it { expect(response).to_not have_header('Cache-Control') }
     end
   end
 
@@ -48,9 +51,58 @@ describe Rack::CanonicalHost do
   end
 
   context '#call' do
-    let(:env) { Rack::MockRequest.env_for(url) }
+    let(:headers) { {} }
 
-    subject { app.call(env) }
+    let(:app) { build_app('example.com') }
+    let(:env) { Rack::MockRequest.env_for(url, headers) }
+
+    def call_app
+      app.call(env)
+    end
+
+    subject(:response) { call_app }
+
+    include_context 'a matching request'
+    include_context 'a non-matching request'
+
+    context 'when the request has a pipe in the URL' do
+      let(:url) { 'https://example.com/full/path?value=withPIPE' }
+
+      before { env['QUERY_STRING'].sub!('PIPE', '|') }
+
+      it { expect { call_app }.to_not raise_error }
+    end
+
+    context 'when the request has JavaScript in the URL' do
+      let(:url) { 'http://www.example.com/full/path' }
+
+      let(:headers) {
+        { 'QUERY_STRING' => '"><script>alert(73541);</script>' }
+      }
+
+      let(:app) { build_app('example.com') }
+
+      it 'escapes the JavaScript' do
+        expect(response)
+          .to be_redirect.to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
+      end
+    end
+
+    context 'with an X-Forwarded-Host' do
+      let(:url) { 'http://proxy.test/full/path' }
+
+      context 'which matches the canonical host' do
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'example.com:80' } }
+
+        include_context 'a matching request'
+      end
+
+      context 'which does not match the canonical host' do
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80' } }
+
+        include_context 'a non-matching request'
+      end
+    end
 
     context 'without a host' do
       let(:app) { build_app(nil) }
@@ -58,41 +110,11 @@ describe Rack::CanonicalHost do
       include_context 'a matching request'
     end
 
-    context 'with an X-Forwarded-Host' do
-      let(:app) { build_app('example.com') }
-      let(:url) { 'http://proxied.url/full/path' }
-
-      context 'which matches the canonical host' do
-        let(:env) { Rack::MockRequest.env_for(url, 'HTTP_X_FORWARDED_HOST' => 'example.com:80') }
-
-        include_context 'a matching request'
-      end
-
-      context 'which does not match the canonical host' do
-        let(:env) { Rack::MockRequest.env_for(url, 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80') }
-
-        include_context 'a non-matching request'
-      end
-    end
-
-    context 'without any options' do
-      let(:app) { build_app('example.com') }
-
-      include_context 'matching and non-matching requests'
-
-      context 'when the request has a pipe in the URL' do
-        let(:url) { 'https://example.com/full/path?value=withPIPE' }
-
-        before { env['QUERY_STRING'].sub!('PIPE', '|') }
-
-        it { expect { subject }.to_not raise_error }
-      end
-    end
-
     context 'with :ignore option' do
       let(:app) { build_app('example.com', :ignore => 'example.net') }
 
-      include_context 'matching and non-matching requests'
+      include_context 'a matching request'
+      include_context 'a non-matching request'
 
       context 'with a request to an ignored host' do
         let(:url) { 'http://example.net/full/path' }
@@ -100,51 +122,55 @@ describe Rack::CanonicalHost do
         it { should_not be_redirect }
 
         it 'calls the inner app' do
-          expect(inner_app).to receive(:call).with(env).and_return(response)
-          subject
+          expect(inner_app).to receive(:call).with(env)
+          call_app
         end
       end
     end
 
     context 'with :if option' do
-
       let(:app) { build_app('example.com', :if => 'www.example.net') }
 
-      context 'with a request to a :if matching host' do
+      context 'with a request to a matching host' do
         let(:url) { 'http://www.example.net/full/path' }
+
         it { should be_redirect.to('http://example.com/full/path') }
       end
 
-      context 'with a request to a :if non-matching host' do
-        let(:url) { 'http://www.sexample.net/full/path' }
+      context 'with a request to a non-matching host' do
+        let(:url) { 'http://www.example.com/full/path' }
+
         it { should_not be_redirect }
       end
-
     end
 
-    context 'with :if and regexp as an option' do
-
+    context 'with a regular expression :if option' do
       let(:app) { build_app('example.com', :if => /.*\.example\.net/) }
 
-      context 'with a request to a :if matching host' do
+      context 'with a request to a matching host' do
         let(:url) { 'http://subdomain.example.net/full/path' }
+
         it { should be_redirect.to('http://example.com/full/path') }
       end
 
-      context 'with a request to a :if non-matching host' do
+      context 'with a request to a non-matching host' do
         let(:url) { 'http://example.net/full/path' }
+
         it { should_not be_redirect }
       end
-
     end
 
     context 'with a :cache_control option' do
       let(:url) { 'http://subdomain.example.net/full/path' }
 
       context 'with a max-age value' do
-        let(:app) { build_app('example.com', :cache_control => 'max-age=3600') }
+        let(:app) {
+          build_app('example.com', :cache_control => 'max-age=3600')
+        }
 
-        it { expect(subject).to have_header('Cache-Control').with('max-age=3600') }
+        it {
+          expect(response).to have_header('Cache-Control').with('max-age=3600')
+        }
       end
 
       context 'with a no-cache value' do
@@ -169,26 +195,15 @@ describe Rack::CanonicalHost do
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 
-      include_context 'matching and non-matching requests'
+      include_context 'a matching request'
+      include_context 'a non-matching request'
 
       context 'that returns nil' do
         let(:app) { build_app('example.com') { nil } }
 
-        include_context 'matching and non-matching requests'
+        include_context 'a matching request'
+        include_context 'a non-matching request'
       end
-    end
-
-    context 'with URL containing JavaScript XSS' do
-      let(:url) { 'http://subdomain.example.net/full/path' }
-      let(:env) do
-        Rack::MockRequest.env_for(url).tap do |env|
-          env['QUERY_STRING'] = '"><script>alert(73541);</script>'
-        end
-      end
-
-      let(:app) { build_app('example.com') }
-
-      it { should be_redirect.to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E') }
     end
   end
 end
