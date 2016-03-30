@@ -34,7 +34,7 @@ RSpec.describe Rack::CanonicalHost do
     context 'with a request to a non-matching host' do
       let(:url) { 'http://www.example.com/full/path' }
 
-      it { should be_redirect.via(301).to('http://example.com/full/path') }
+      it { should redirect_to('http://example.com/full/path') }
 
       it 'does not call the inner app' do
         expect(inner_app).to_not receive(:call)
@@ -84,7 +84,7 @@ RSpec.describe Rack::CanonicalHost do
 
       it 'escapes the JavaScript' do
         expect(response)
-          .to be_redirect.to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
+          .to redirect_to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Rack::CanonicalHost do
       context 'with a request to a matching host' do
         let(:url) { 'http://www.example.net/full/path' }
 
-        it { should be_redirect.to('http://example.com/full/path') }
+        it { should redirect_to('http://example.com/full/path') }
       end
 
       context 'with a request to a non-matching host' do
@@ -150,7 +150,7 @@ RSpec.describe Rack::CanonicalHost do
       context 'with a request to a matching host' do
         let(:url) { 'http://subdomain.example.net/full/path' }
 
-        it { should be_redirect.to('http://example.com/full/path') }
+        it { should redirect_to('http://example.com/full/path') }
       end
 
       context 'with a request to a non-matching host' do
