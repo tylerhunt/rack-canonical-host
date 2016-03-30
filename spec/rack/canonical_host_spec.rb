@@ -36,8 +36,8 @@ describe Rack::CanonicalHost do
         subject
       end
 
-      it 'includes a cache expiry' do
-        expect(subject).to have_header('Cache-Control').with('max-age=3600')
+      it 'does not include a Cache-Control header' do
+        expect(subject).to_not have_header('Cache-Control')
       end
     end
   end
@@ -138,31 +138,31 @@ describe Rack::CanonicalHost do
 
     end
 
-    context 'with a :cache_expiry option' do
+    context 'with a :cache_control option' do
       let(:url) { 'http://subdomain.example.net/full/path' }
 
-      context 'that is a number' do
-        let(:app) { build_app('example.com', :cache_expiry => 42) }
+      context 'with a max-age value' do
+        let(:app) { build_app('example.com', :cache_control => 'max-age=3600') }
 
-        it 'is treated as the max-age value' do
-          expect(subject).to have_header('Cache-Control').with('max-age=42')
-        end
+        it { expect(subject).to have_header('Cache-Control').with('max-age=3600') }
       end
 
-      context 'that is a string' do
-        let(:app) { build_app('example.com', :cache_expiry => 'no-cache') }
+      context 'with a no-cache value' do
+        let(:app) { build_app('example.com', :cache_control => 'no-cache') }
 
-        it 'passes the value to the Cache-Control header' do
-          expect(subject).to have_header('Cache-Control').with('no-cache')
-        end
+        it { expect(subject).to have_header('Cache-Control').with('no-cache') }
       end
 
-      context 'that is false' do
-        let(:app) { build_app('example.com', :cache_expiry => false) }
+      context 'with a false value' do
+        let(:app) { build_app('example.com', :cache_control => false) }
 
-        it 'disables the Cache-Control header' do
-          expect(subject).not_to have_header('Cache-Control')
-        end
+        it { expect(subject).to_not have_header('Cache-Control') }
+      end
+
+      context 'with a nil value' do
+        let(:app) { build_app('example.com', :cache_control => false) }
+
+        it { expect(subject).to_not have_header('Cache-Control') }
       end
     end
 

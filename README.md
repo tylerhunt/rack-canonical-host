@@ -95,24 +95,21 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
-To avoid browsers indefinitely caching a 301 redirect, it's a sensible idea to
-set an expiry on each redirect, to hedge against the chance you need to change
-that redirect in the future.
+### Cache-Control
 
-By default
+To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea
+to set an expiry on each redirect, to hedge against the chance you may need to
+change that redirect in the future.
 
-```ruby
-# Browsers will cache host redirects for up to one hour
+``` ruby
+# Leave caching up to the browser (which could cache it indefinitely):
 use Rack::CanonicalHost, 'example.com'
 
-# Browsers will cache host redirects for up to 42 seconds
-use Rack::CanonicalHost, 'example.com', cache_expiry: 42
+# Cache the redirect for up to an hour:
+use Rack::CanonicalHost, 'example.com', cache_control: 'max-age=3600'
 
-# Browsers will cache host redirects indefinitely (not recommended)
-use Rack::CanonicalHost, 'example.com', cache_expiry: false
-
-# Specify a custom value for the Cache-Control header
-use Rack::CanonicalHost, 'example.com', cache_expiry: 'no-cache'
+# Prevent caching of redirects:
+use Rack::CanonicalHost, 'example.com', cache_control: 'no-cache'
 ```
 
 ## Contributing

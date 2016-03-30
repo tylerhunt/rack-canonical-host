@@ -4,8 +4,6 @@ require 'rack'
 module Rack
   class CanonicalHost
     class Redirect
-      DEFAULT_CACHE_EXPIRY_IN_SECONDS = 3600
-
       HTML_TEMPLATE = <<-HTML.gsub(/^\s+/, '')
         <!DOCTYPE html>
         <html lang="en-US">
@@ -22,12 +20,7 @@ module Rack
         self.host = host
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
-
-        if options.has_key?(:cache_expiry)
-          self.cache_expiry = options[:cache_expiry]
-        else
-          self.cache_expiry = DEFAULT_CACHE_EXPIRY_IN_SECONDS
-        end
+        self.cache_control = options[:cache_control]
       end
 
       def canonical?
@@ -45,7 +38,7 @@ module Rack
       attr_accessor :host
       attr_accessor :ignore
       attr_accessor :conditions
-      attr_accessor :cache_expiry
+      attr_accessor :cache_control
 
     private
 
@@ -55,9 +48,10 @@ module Rack
 
       def headers
         {
+          'Cache-Control' => cache_control,
+          'Content-Type' => 'text/html',
           'Location' => new_url,
-          'Content-Type' => 'text/html'
-        }.merge(cache_control_headers)
+        }.reject { |_, value| !value }
       end
 
       def enabled?
@@ -83,16 +77,6 @@ module Rack
 
       def request_uri
         @request_uri ||= Addressable::URI.parse(Rack::Request.new(env).url)
-      end
-
-      private
-
-      def cache_control_headers
-        cache_expiry ? { 'Cache-Control' => cache_control_value } : {}
-      end
-
-      def cache_control_value
-        cache_expiry.is_a?(Fixnum) ? "max-age=#{cache_expiry}" : cache_expiry
       end
     end
   end
