@@ -1,13 +1,7 @@
 module BeRedirect
   class Matcher
-    attr :expected_status_code
-    attr :expected_location
-    attr :actual_status_code
-    attr :actual_location
-
     def matches?(response)
-      @actual_status_code, headers, _ = response
-      @actual_location = headers['Location']
+      self.actual_status_code, self.actual_headers, _ = response
 
       status_code_matches? && location_matches?
     end
@@ -42,6 +36,21 @@ module BeRedirect
       "Did not expect response to #{description}"
     end
 
+  protected
+
+    attr_accessor :actual_headers
+    attr_accessor :actual_status_code
+    attr_accessor :expected_location
+    attr_accessor :expected_status_code
+
+  private
+
+    LOCATION = 'Location'
+
+    def actual_location
+      actual_headers[LOCATION]
+    end
+
     def status_code_matches?
       if expected_status_code
         actual_status_code == expected_status_code
@@ -49,12 +58,12 @@ module BeRedirect
         actual_status_code.to_s =~ /^30[1237]$/
       end
     end
-    private :status_code_matches?
 
     def location_matches?
-      !expected_location || (expected_location == actual_location)
+      if expected_location
+        expected_location == actual_location
+      end
     end
-    private :location_matches?
   end
 
   def be_redirect
@@ -63,5 +72,5 @@ module BeRedirect
 end
 
 RSpec.configure do |config|
-  config.include(BeRedirect)
+  config.include BeRedirect
 end
