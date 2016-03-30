@@ -1,5 +1,10 @@
-module BeRedirect
+module RedirectTo
   class Matcher
+    def initialize(expected_location)
+      self.expected_location = expected_location
+      self.expected_status_code = STATUS
+    end
+
     def matches?(response)
       self.actual_status_code, self.actual_headers, _ = response
 
@@ -7,24 +12,19 @@ module BeRedirect
     end
 
     def via(expected_status_code)
-      @expected_status_code = expected_status_code
-      self
-    end
-
-    def to(expected_location)
-      @expected_location = expected_location
+      self.expected_status_code = expected_status_code
       self
     end
 
     def description
       if expected_status_code && expected_location
-        "redirect via #{expected_status_code} to #{expected_location.inspect}"
+        "redirect to #{expected_location.inspect} via #{expected_status_code}"
       elsif expected_status_code
         "redirect via #{expected_status_code}"
       elsif expected_location
         "redirect to #{expected_location.inspect}"
       else
-        "be a redirect"
+        'be a redirect'
       end
     end
 
@@ -46,6 +46,7 @@ module BeRedirect
   private
 
     LOCATION = 'Location'
+    STATUS = 301
 
     def actual_location
       actual_headers[LOCATION]
@@ -66,11 +67,15 @@ module BeRedirect
     end
   end
 
+  def redirect_to(location)
+    Matcher.new(location)
+  end
+
   def be_redirect
-    Matcher.new
+    Matcher.new(nil).via(nil)
   end
 end
 
 RSpec.configure do |config|
-  config.include BeRedirect
+  config.include RedirectTo
 end
