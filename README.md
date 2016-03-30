@@ -126,6 +126,7 @@ use Rack::CanonicalHost, 'example.com', cache_control: 'no-cache'
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
+  * [Pete Nicholls](https://github.com/Aupajo)
   * [Tyler Ewing](https://github.com/zoso10)
   * [Thomas Maurer](https://github.com/tma)
   * [Jeff Carbonella](https://github.com/jcarbo)

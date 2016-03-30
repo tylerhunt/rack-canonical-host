@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Add `:cache_control` option ([Pete Nicholls][Aupajo])
+
 ## 0.2.1 (2016-03-28)
 
   * Relax Rack dependency to allow for Rack 2 ([Tyler Ewing][zoso10])
@@ -57,6 +61,7 @@
 
   * Initial release ([Tyler Hunt][tylerhunt])
 
+[Aupajo]: http://github.com/Aupajo
 [finack]: http://github.com/finack
 [firedev]: http://github.com/firedev
 [jcarbo]: http://github.com/jcarbo
