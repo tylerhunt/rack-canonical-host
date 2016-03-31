@@ -95,6 +95,23 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
+### Cache-Control
+
+To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea
+to set an expiry on each redirect, to hedge against the chance you may need to
+change that redirect in the future.
+
+``` ruby
+# Leave caching up to the browser (which could cache it indefinitely):
+use Rack::CanonicalHost, 'example.com'
+
+# Cache the redirect for up to an hour:
+use Rack::CanonicalHost, 'example.com', cache_control: 'max-age=3600'
+
+# Prevent caching of redirects:
+use Rack::CanonicalHost, 'example.com', cache_control: 'no-cache'
+```
+
 ## Contributing
 
   1. Fork it
@@ -109,6 +126,7 @@ use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 Thanks to the following people who have contributed patches or helpful
 suggestions:
 
+  * [Pete Nicholls](https://github.com/Aupajo)
   * [Tyler Ewing](https://github.com/zoso10)
   * [Thomas Maurer](https://github.com/tma)
   * [Jeff Carbonella](https://github.com/jcarbo)

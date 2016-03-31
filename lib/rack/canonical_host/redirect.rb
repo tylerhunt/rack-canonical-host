@@ -20,6 +20,7 @@ module Rack
         self.host = host
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
+        self.cache_control = options[:cache_control]
       end
 
       def canonical?
@@ -37,6 +38,7 @@ module Rack
       attr_accessor :host
       attr_accessor :ignore
       attr_accessor :conditions
+      attr_accessor :cache_control
 
     private
 
@@ -46,9 +48,10 @@ module Rack
 
       def headers
         {
-          'Location' => new_url,
+          'Cache-Control' => cache_control,
           'Content-Type' => 'text/html',
-        }
+          'Location' => new_url,
+        }.reject { |_, value| !value }
       end
 
       def enabled?

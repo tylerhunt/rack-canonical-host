@@ -35,6 +35,10 @@ describe Rack::CanonicalHost do
         expect(inner_app).to_not receive(:call)
         subject
       end
+
+      it 'does not include a Cache-Control header' do
+        expect(subject).to_not have_header('Cache-Control')
+      end
     end
   end
 
@@ -132,6 +136,34 @@ describe Rack::CanonicalHost do
         it { should_not be_redirect }
       end
 
+    end
+
+    context 'with a :cache_control option' do
+      let(:url) { 'http://subdomain.example.net/full/path' }
+
+      context 'with a max-age value' do
+        let(:app) { build_app('example.com', :cache_control => 'max-age=3600') }
+
+        it { expect(subject).to have_header('Cache-Control').with('max-age=3600') }
+      end
+
+      context 'with a no-cache value' do
+        let(:app) { build_app('example.com', :cache_control => 'no-cache') }
+
+        it { expect(subject).to have_header('Cache-Control').with('no-cache') }
+      end
+
+      context 'with a false value' do
+        let(:app) { build_app('example.com', :cache_control => false) }
+
+        it { expect(subject).to_not have_header('Cache-Control') }
+      end
+
+      context 'with a nil value' do
+        let(:app) { build_app('example.com', :cache_control => false) }
+
+        it { expect(subject).to_not have_header('Cache-Control') }
+      end
     end
 
     context 'with a block' do
