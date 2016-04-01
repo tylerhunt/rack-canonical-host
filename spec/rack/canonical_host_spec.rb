@@ -34,7 +34,11 @@ RSpec.describe Rack::CanonicalHost do
     context 'with a request to a non-matching host' do
       let(:url) { 'http://www.example.com/full/path' }
 
-      it { should redirect_to('http://example.com/full/path') }
+      it { should redirect_to('http://example.com/full/path').via(301) }
+
+      it 'has an appropriate redirection message' do
+        expect(response).to have_content('301 Moved Permanently')
+      end
 
       it 'does not call the inner app' do
         expect(inner_app).to_not receive(:call)
@@ -198,6 +202,10 @@ RSpec.describe Rack::CanonicalHost do
 
       context 'with a request to a non-matching host' do
         it { should redirect_to('http://example.com/full/path').via(302) }
+
+        it 'has an appropriate redirection message' do
+          expect(response).to have_content('302 Found')
+        end
       end
     end
 

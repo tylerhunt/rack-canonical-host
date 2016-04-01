@@ -95,7 +95,6 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
-<<<<<<< HEAD
 ### Cache-Control
 
 To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea
