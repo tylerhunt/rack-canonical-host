@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.2 (2016-05-17)
 
   * Add `:cache_control` option ([Pete Nicholls][Aupajo])
 
