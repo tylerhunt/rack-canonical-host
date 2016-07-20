@@ -95,6 +95,11 @@ use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
 
+If you want it check for a list of IPs use: `:ip_whitelist`, it accepts an array strings.
+
+``` ruby
+use Rack::CanonicalHost, 'example.com', ip_whitelist: ['10.0.0.1', '2.3.3.2', '127.0.0.1']
+```
 ### Cache-Control
 
 To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea

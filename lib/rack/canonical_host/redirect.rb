@@ -19,6 +19,7 @@ module Rack
         self.env = env
         self.host = host
         self.ignore = Array(options[:ignore])
+        self.ip_whitelist = Array(options[:ip_whitelist])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
       end
@@ -37,6 +38,7 @@ module Rack
       attr_accessor :env
       attr_accessor :host
       attr_accessor :ignore
+      attr_accessor :ip_whitelist
       attr_accessor :conditions
       attr_accessor :cache_control
 
@@ -66,7 +68,8 @@ module Rack
       end
 
       def known?
-        host.nil? || request_uri.host == host
+        host.nil? || request_uri.host == host ||
+          ip_whitelist.include?(request_ip)
       end
 
       def new_url
@@ -77,6 +80,10 @@ module Rack
 
       def request_uri
         @request_uri ||= Addressable::URI.parse(Rack::Request.new(env).url)
+      end
+
+      def request_ip
+        @request_ip ||= Rack::Request.new(env).ip
       end
     end
   end
