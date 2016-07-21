@@ -1,5 +1,7 @@
 require 'addressable/uri'
 require 'rack'
+require 'ipaddr'
+
 
 module Rack
   class CanonicalHost
@@ -20,6 +22,7 @@ module Rack
         self.host = host
         self.ignore = Array(options[:ignore])
         self.ip_whitelist = Array(options[:ip_whitelist])
+        self.subnets = Array(options[:subnets])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
       end
@@ -39,6 +42,7 @@ module Rack
       attr_accessor :host
       attr_accessor :ignore
       attr_accessor :ip_whitelist
+      attr_accessor :subnets
       attr_accessor :conditions
       attr_accessor :cache_control
 
@@ -68,8 +72,7 @@ module Rack
       end
 
       def known?
-        host.nil? || request_uri.host == host ||
-          ip_whitelist.include?(request_ip)
+        host.nil? || request_uri.host == host || known_ip?
       end
 
       def new_url
@@ -84,6 +87,18 @@ module Rack
 
       def request_ip
         @request_ip ||= Rack::Request.new(env).ip
+      end
+
+      def known_ip?
+        ip_whitelist.include?(request_ip) || in_subnet?
+      end
+
+      def in_subnet?
+        if request_ip
+          ipaddr = IPAddr.new(request_ip)
+          ipaddr_subnets = subnets.map {|n| IPAddr.new(n) }
+          ipaddr_subnets.any? { |i| i.include?(ipaddr) }
+        end
       end
     end
   end
