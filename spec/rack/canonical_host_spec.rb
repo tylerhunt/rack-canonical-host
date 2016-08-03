@@ -110,8 +110,26 @@ RSpec.describe Rack::CanonicalHost do
       include_context 'a matching request'
     end
 
-    context 'with :ignore option' do
+    context 'with :ignore string option' do
       let(:app) { build_app('example.com', :ignore => 'example.net') }
+
+      include_context 'a matching request'
+      include_context 'a non-matching request'
+
+      context 'with a request to an ignored host' do
+        let(:url) { 'http://example.net/full/path' }
+
+        it { should_not be_redirect }
+
+        it 'calls the inner app' do
+          expect(inner_app).to receive(:call).with(env)
+          call_app
+        end
+      end
+    end
+
+    context 'with :ignore regex option' do
+      let(:app) { build_app('example.com', :ignore => /ex.*\.net/) }
 
       include_context 'a matching request'
       include_context 'a non-matching request'

@@ -62,7 +62,10 @@ module Rack
       end
 
       def ignored?
-        ignore.include?(request_uri.host)
+        return false if ignore.empty?
+
+        ignore.include?(request_uri.host) ||
+          any_match?(ignore, request_uri.host)
       end
 
       def known?
