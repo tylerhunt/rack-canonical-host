@@ -9,7 +9,6 @@ gemfile:
   - gemfiles/rack_2.0.gemfile
 
 rvm:
-  - 1.9.3
   - 2.0.0
   - 2.1.10
   - 2.2.7
@@ -18,8 +17,6 @@ rvm:
 
 matrix:
   exclude:
-    - rvm: 1.9.3
-      gemfile: gemfiles/rack_2.0.gemfile
     - rvm: 2.0.0
       gemfile: gemfiles/rack_2.0.gemfile
     - rvm: 2.1.10
