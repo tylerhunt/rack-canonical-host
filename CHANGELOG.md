@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 (2017-04-20)
+
+  * Add regexp support for `:ignore` option ([Daniel Searles][squaresurf])
+
 ## 0.2.2 (2016-05-17)
 
   * Add `:cache_control` option ([Pete Nicholls][Aupajo])
@@ -69,6 +73,7 @@
 [jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
 [rubymaverick]: http://github.com/ericallam
+[squaresurfSearles]: https://github.com/squaresurf
 [tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
 [zoso10]: http://github.com/zoso10
