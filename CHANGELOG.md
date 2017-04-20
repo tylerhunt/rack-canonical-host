@@ -73,7 +73,7 @@
 [jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
 [rubymaverick]: http://github.com/ericallam
-[squaresurfSearles]: https://github.com/squaresurf
+[squaresurf]: https://github.com/squaresurf
 [tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
 [zoso10]: http://github.com/zoso10
