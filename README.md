@@ -11,9 +11,9 @@ the canonical host.
 
 ## Installation
 
-Add this line to your application's `Gemfile`:
+Add this line to your application’s `Gemfile`:
 
-``` ruby
+```ruby
 gem 'rack-canonical-host'
 ```
 
@@ -31,10 +31,10 @@ Or install it yourself as:
 For most applications, you can insert the middleware into the `config.ru` file
 in the root of the application.
 
-Here's a simple example of what the `config.ru` in a Rails application might
+Here’s a simple example of what the `config.ru` in a Rails application might
 look like after adding the `Rack::CanonicalHost` middleware.
 
-``` ruby
+```ruby
 require ::File.expand_path('../config/environment',  __FILE__)
 
 use Rack::CanonicalHost, 'example.com'
@@ -57,7 +57,7 @@ With Heroku, you would do this like so:
 
 Then, can configure the middleware like this:
 
-``` ruby
+```ruby
 use Rack::CanonicalHost, ENV['CANONICAL_HOST'] if ENV['CANONICAL_HOST']
 ```
 
@@ -66,11 +66,11 @@ Now, the middleware will only be used if a canonical host has been defined.
 
 ### Options
 
-If you'd like the middleware to ignore certain hosts, use the `:ignore`
-option, it accepts string, regexp or an array.
+If you’d like the middleware to ignore certain hosts, use the `:ignore`
+option, which accepts a string, a regular expression, or an array of either.
 
-``` ruby
-use Rack::CanonicalHost, 'example.com', ignore: ['api.example.com']
+```ruby
+use Rack::CanonicalHost, 'example.com', ignore: 'api.example.com'
 ```
 
 In this case, requests for the host `api.example.com` will not be redirected.
@@ -78,7 +78,7 @@ In this case, requests for the host `api.example.com` will not be redirected.
 Alternatively, you can pass a block whose return value will be used as the
 canonical host name.
 
-``` ruby
+```ruby
 use Rack::CanonicalHost do |env|
   case env['RACK_ENV'].to_sym
     when :staging then 'staging.example.com'
@@ -87,10 +87,11 @@ use Rack::CanonicalHost do |env|
 end
 ```
 
-If you want it to react only on specific hosts for multi-domain environment use `:if`,
-it accepts string, regexp or an array.
+If you want it to react only on specific hosts within a multi-domain
+environment, use the `:if` option, which accepts a string, a regular
+expression, or an array of either.
 
-``` ruby
+```ruby
 use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
 use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 ```
@@ -101,7 +102,7 @@ To avoid browsers indefinitely caching a `301` redirect, it’s a sensible idea
 to set an expiry on each redirect, to hedge against the chance you may need to
 change that redirect in the future.
 
-``` ruby
+```ruby
 # Leave caching up to the browser (which could cache it indefinitely):
 use Rack::CanonicalHost, 'example.com'
 
@@ -136,10 +137,11 @@ suggestions:
   * [Nathaniel Bibler](https://github.com/nbibler)
   * [Eric Allam](https://github.com/ericallam)
   * [Fabrizio Regini](https://github.com/freegenie)
+  * [Daniel Searles](https://github.com/squaresurf)
 
 
 ## Copyright
 
-Copyright © 2009-2016 Tyler Hunt.
+Copyright © 2009-2017 Tyler Hunt.
 
 Released under the terms of the MIT license. See LICENSE for details.
