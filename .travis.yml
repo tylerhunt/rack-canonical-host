@@ -1,6 +1,7 @@
 language: ruby
 cache: bundler
 script: bundle exec rspec
+dist: xenial
 sudo: false
 
 gemfile:
@@ -9,15 +10,7 @@ gemfile:
   - gemfiles/rack_2.0.gemfile
 
 rvm:
-  - 2.0.0
-  - 2.1.10
-  - 2.2.7
-  - 2.3.4
-  - 2.4.1
-
-matrix:
-  exclude:
-    - rvm: 2.0.0
-      gemfile: gemfiles/rack_2.0.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/rack_2.0.gemfile
+  - 2.3.8
+  - 2.4.5
+  - 2.5.3
+  - 2.6.1
