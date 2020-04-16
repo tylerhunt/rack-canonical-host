@@ -34,6 +34,7 @@ Here’s a simple example of what the `config.ru` in a Rails application might
 look like after adding the `Rack::CanonicalHost` middleware.
 
 ```ruby
+require 'rack/canonical_host'
 require ::File.expand_path('../config/environment',  __FILE__)
 
 use Rack::CanonicalHost, 'example.com'
