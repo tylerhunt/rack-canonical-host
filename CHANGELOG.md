@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 (2020-04-16)
 
   * Use equality to determine string matches on `:if` and `:ignore`
 
