@@ -110,71 +110,75 @@ RSpec.describe Rack::CanonicalHost do
       include_context 'a matching request'
     end
 
-    context 'with :ignore string option' do
-      let(:app) { build_app('example.com', :ignore => 'example.net') }
+    context 'with :ignore option' do
+      context 'with string' do
+        let(:app) { build_app('example.com', :ignore => 'example.net') }
 
-      include_context 'a matching request'
-      include_context 'a non-matching request'
+        include_context 'a matching request'
+        include_context 'a non-matching request'
 
-      context 'with a request to an ignored host' do
-        let(:url) { 'http://example.net/full/path' }
+        context 'with a request to an ignored host' do
+          let(:url) { 'http://example.net/full/path' }
 
-        it { should_not be_redirect }
+          it { should_not be_redirect }
 
-        it 'calls the inner app' do
-          expect(inner_app).to receive(:call).with(env)
-          call_app
+          it 'calls the inner app' do
+            expect(inner_app).to receive(:call).with(env)
+            call_app
+          end
         end
       end
-    end
 
-    context 'with :ignore regex option' do
-      let(:app) { build_app('example.com', :ignore => /ex.*\.net/) }
+      context 'with regular expression' do
+        let(:app) { build_app('example.com', :ignore => /ex.*\.net/) }
 
-      include_context 'a matching request'
-      include_context 'a non-matching request'
+        include_context 'a matching request'
+        include_context 'a non-matching request'
 
-      context 'with a request to an ignored host' do
-        let(:url) { 'http://example.net/full/path' }
+        context 'with a request to an ignored host' do
+          let(:url) { 'http://example.net/full/path' }
 
-        it { should_not be_redirect }
+          it { should_not be_redirect }
 
-        it 'calls the inner app' do
-          expect(inner_app).to receive(:call).with(env)
-          call_app
+          it 'calls the inner app' do
+            expect(inner_app).to receive(:call).with(env)
+            call_app
+          end
         end
       end
     end
 
     context 'with :if option' do
-      let(:app) { build_app('example.com', :if => 'www.example.net') }
+      context 'with string' do
+        let(:app) { build_app('www.example.com', :if => 'example.com') }
 
-      context 'with a request to a matching host' do
-        let(:url) { 'http://www.example.net/full/path' }
+        context 'with a request to a matching host' do
+          let(:url) { 'http://example.com/full/path' }
 
-        it { should redirect_to('http://example.com/full/path') }
+          it { should redirect_to('http://www.example.com/full/path') }
+        end
+
+        context 'with a request to a non-matching host' do
+          let(:url) { 'http://api.example.com/full/path' }
+
+          it { should_not be_redirect }
+        end
       end
 
-      context 'with a request to a non-matching host' do
-        let(:url) { 'http://www.example.com/full/path' }
+      context 'with a regular expression' do
+        let(:app) { build_app('example.com', :if => '.*\.example\.com') }
 
-        it { should_not be_redirect }
-      end
-    end
+        context 'with a request to a matching host' do
+          let(:url) { 'http://www.example.com/full/path' }
 
-    context 'with a regular expression :if option' do
-      let(:app) { build_app('example.com', :if => /.*\.example\.net/) }
+          it { should_not redirect_to('http://example.com/full/path') }
+        end
 
-      context 'with a request to a matching host' do
-        let(:url) { 'http://subdomain.example.net/full/path' }
+        context 'with a request to a non-matching host' do
+          let(:url) { 'http://www.example.net/full/path' }
 
-        it { should redirect_to('http://example.com/full/path') }
-      end
-
-      context 'with a request to a non-matching host' do
-        let(:url) { 'http://example.net/full/path' }
-
-        it { should_not be_redirect }
+          it { should_not be_redirect }
+        end
       end
     end
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Use equality to determine string matches on `:if` and `:ignore`
+
 ## 0.2.3 (2017-04-20)
 
   * Add regexp support for `:ignore` option ([Daniel Searles][squaresurf])

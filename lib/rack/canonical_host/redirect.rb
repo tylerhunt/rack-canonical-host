@@ -42,8 +42,14 @@ module Rack
 
     private
 
-      def any_match?(patterns, string)
-        patterns.any? { |pattern| string[pattern] }
+      def any_match?(patterns, host)
+        patterns.any? { |pattern|
+          case pattern
+          when Regexp then host =~ pattern
+          when String then host == pattern
+          else false
+          end
+        }
       end
 
       def headers
@@ -57,15 +63,13 @@ module Rack
       def enabled?
         return true if conditions.empty?
 
-        conditions.include?(request_uri.host) ||
-          any_match?(conditions, request_uri.host)
+        any_match?(conditions, request_uri.host)
       end
 
       def ignored?
         return false if ignore.empty?
 
-        ignore.include?(request_uri.host) ||
-          any_match?(ignore, request_uri.host)
+        any_match?(ignore, request_uri.host)
       end
 
       def known?
