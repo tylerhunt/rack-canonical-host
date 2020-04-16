@@ -4,10 +4,9 @@ Rack middleware that lets you define a single host name as the canonical host
 for your application. Requests for other host names will then be redirected to
 the canonical host.
 
-[![Gem Version](https://img.shields.io/gem/v/rack-canonical-host.svg)](http://rubygems.org/gems/rack-canonical-host)
-[![Build Status](https://img.shields.io/travis/tylerhunt/rack-canonical-host/master.svg)](https://travis-ci.org/tylerhunt/rack-canonical-host)
-[![Code Climate](https://img.shields.io/codeclimate/github/tylerhunt/rack-canonical-host.svg)](https://codeclimate.com/github/tylerhunt/rack-canonical-host)
-[![Dependency Status](https://gemnasium.com/tylerhunt/rack-canonical-host.svg)](https://gemnasium.com/tylerhunt/rack-canonical-host)
+[![Gem Version](https://img.shields.io/gem/v/rack-canonical-host)](http://rubygems.org/gems/rack-canonical-host)
+[![Build Status](https://img.shields.io/travis/tylerhunt/rack-canonical-host)](https://travis-ci.org/tylerhunt/rack-canonical-host)
+[![Code Climate](https://img.shields.io/codeclimate/maintainability/tylerhunt/rack-canonical-host)](https://codeclimate.com/github/tylerhunt/rack-canonical-host)
 
 ## Installation
 
