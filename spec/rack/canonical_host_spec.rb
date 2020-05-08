@@ -208,9 +208,268 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with a nil value' do
-        let(:app) { build_app('example.com', :cache_control => false) }
+        let(:app) { build_app('example.com', :cache_control => nil) }
 
         it { expect(subject).to_not have_header('Cache-Control') }
+      end
+    end
+
+    context 'with a :temporary option' do
+      let(:url) { 'http://subdomain.example.net/full/path' }
+
+      context 'with a truthy value' do
+        let(:app) { build_app('example.com', :temporary => true) }
+
+        it 'should use a 307 redirect' do
+          expect(response).
+            to redirect_to('http://example.com/full/path').via(307)
+        end
+      end
+
+      context 'with a false value' do
+        let(:app) { build_app('example.com', :temporary => false) }
+
+        it 'should use a 301 redirect' do
+          expect(response).
+            to redirect_to('http://example.com/full/path').via(301)
+        end
+      end
+
+      context 'with a nil value' do
+        let(:app) { build_app('example.com', :temporary => nil) }
+
+        it 'should use a 301 redirect' do
+          expect(response).
+            to redirect_to('http://example.com/full/path').via(301)
+        end
+      end
+    end
+
+    context 'with :append option' do
+      let(:app) { build_app('example.com', :append => true) }
+
+      context 'with matching request' do
+        let(:url) { 'http://example.com/path?query=1' }
+        it { should_not be_redirect }
+      end
+
+      context 'with non-matching request' do
+        let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+        it 'should add the original domain as a query param' do
+          expect(response).
+            to redirect_to(/http:\/\/example\.com\/path\?.+/)
+
+          expect(response).to have_query_params({
+            'original_host' => 'subdomain.example.net',
+            'query' => '1'
+          })
+        end
+      end
+    end
+
+    context 'with a :prefix option' do
+      [
+        true,
+        :subdomain
+      ].each do |value|
+        context "with #{value.is_a?(Symbol) ? ':' : ''}#{value} value" do
+          context 'with subdomain' do
+            let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+            let(:app) { build_app('example.com', :prefix => value) }
+
+            it 'should prepend the subdomain to the path' do
+              expect(response).
+                to redirect_to('http://example.com/subdomain/path?query=1')
+            end
+
+            context 'with multilevel TLD' do
+              let(:url) { 'http://multi.example.co.uk/path?query=1' }
+
+              it 'should treat the TLD correctly and prepend the subdomain' do
+                expect(response).
+                  to redirect_to('http://example.com/multi/path?query=1')
+              end
+            end
+
+            context 'with multilevel subdomain' do
+              let(:url) { 'http://a.b.c.example.net/path?query=1' }
+
+              it 'should prepend each subdomain in order from top to bottom' do
+                expect(response).
+                  to redirect_to('http://example.com/c/b/a/path?query=1')
+              end
+
+              context 'with :separator option' do
+                context 'unencoded' do
+                  let(:app) {
+                    build_app('example.com', :prefix => value, separator: '|')
+                  }
+                  it 'should separate each subdomain with a URL encoded separator' do
+                    expect(response).
+                    to redirect_to('http://example.com/c%7Cb%7Ca/path?query=1')
+                  end
+                end
+
+                context 'encoded' do
+                  let(:app) {
+                    build_app('example.com', :prefix => value, separator: '%7C')
+                  }
+
+                  it 'should separate each subdomain with the given encoded separator' do
+                    expect(response).
+                    to redirect_to('http://example.com/c%7Cb%7Ca/path?query=1')
+                  end
+                end
+              end
+
+              context 'with multilevel TLD' do
+                let(:url) { 'http://a.b.c.example.co.uk/path?query=1' }
+
+                it 'should prepend the correct subdomains' do
+                  expect(response).
+                    to redirect_to('http://example.com/c/b/a/path?query=1')
+                end
+              end
+            end
+          end
+
+          context 'without subdomain' do
+            let(:url) { 'http://example.net/path?query=1' }
+
+            it { should redirect_to('http://example.com/path?query=1') }
+          end
+
+          context 'without hostname' do
+            let(:url) { '/path?query=1' }
+
+            it { should redirect_to('http://example.com/path?query=1') }
+          end
+        end
+      end
+
+      context "with :bottom_to_top value" do
+        context 'with subdomain' do
+          let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+          let(:app) { build_app('example.com', :prefix => :bottom_to_top) }
+
+          it 'should prepend the subdomain to the path' do
+            expect(response).
+              to redirect_to('http://example.com/subdomain/path?query=1')
+          end
+
+          context 'with multilevel TLD' do
+            let(:url) { 'http://multi.example.co.uk/path?query=1' }
+
+            it 'should treat the TLD correctly and prepend the subdomain' do
+              expect(response).
+                to redirect_to('http://example.com/multi/path?query=1')
+            end
+          end
+
+          context 'with multilevel subdomain' do
+            let(:url) { 'http://a.b.c.example.net/path?query=1' }
+
+            it 'should prepend each subdomain ordered from bottom to top' do
+              expect(response).
+                to redirect_to('http://example.com/a/b/c/path?query=1')
+            end
+
+            context 'with multilevel TLD' do
+              let(:url) { 'http://a.b.c.example.co.uk/path?query=1' }
+
+              it 'should prepend the correct subdomains' do
+                expect(response).
+                  to redirect_to('http://example.com/a/b/c/path?query=1')
+              end
+            end
+          end
+        end
+
+        context 'without subdomain' do
+          let(:url) { 'http://example.net/path?query=1' }
+
+          it { should redirect_to('http://example.com/path?query=1') }
+        end
+
+        context 'without hostname' do
+          let(:url) { '/path?query=1' }
+
+          it { should redirect_to('http://example.com/path?query=1') }
+        end
+      end
+
+      context 'with a string' do
+        context 'with non-matching request' do
+          let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+          context 'with trailing slash' do
+            let(:app) { build_app('example.com', :prefix => 'prefix/') }
+
+            it { should redirect_to('http://example.com/prefix/path?query=1') }
+          end
+
+          context 'with preceding slash' do
+            let(:app) { build_app('example.com', :prefix => '/prefix') }
+
+            it { should redirect_to('http://example.com/prefix/path?query=1') }
+          end
+
+          context 'with no slash' do
+            let(:app) { build_app('example.com', :prefix => 'prefix') }
+
+            it { should redirect_to('http://example.com/prefix/path?query=1') }
+          end
+
+          context 'with an empty value' do
+            context 'with slash' do
+              let(:app) { build_app('example.com', :prefix => '/') }
+
+              it { should redirect_to('http://example.com/path?query=1') }
+            end
+
+            context 'with no slash' do
+              let(:app) { build_app('example.com', :prefix => '') }
+
+              it { should redirect_to('http://example.com/path?query=1') }
+            end
+          end
+        end
+
+        context 'with matching request' do
+          let(:url) { 'http://example.com/path?query=1' }
+
+          let(:app) { build_app('example.com', :prefix => 'prefix') }
+
+          it { should_not be_redirect }
+        end
+
+
+        context 'without hostname' do
+          let(:url) { '/path?query=1' }
+
+          let(:app) { build_app('example.com', :prefix => 'prefix') }
+
+          it { should redirect_to('http://example.com/prefix/path?query=1') }
+        end
+      end
+
+      context 'with a false value' do
+        let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+        let(:app) { build_app('example.com', :prefix => false) }
+
+        it { should redirect_to('http://example.com/path?query=1') }
+      end
+
+      context 'with a nil value' do
+        let(:url) { 'http://subdomain.example.net/path?query=1' }
+
+        let(:app) { build_app('example.com', :prefix => nil) }
+
+        it { should redirect_to('http://example.com/path?query=1') }
       end
     end
 
