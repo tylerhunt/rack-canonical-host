@@ -29,7 +29,8 @@ module RedirectTo
     end
 
     def failure_message
-      "Expected response to #{description}"
+      "Expected response to #{description}, " \
+      "received #{actual_location.inspect} via #{actual_status_code} instead"
     end
 
     def failure_message_when_negated
@@ -61,8 +62,9 @@ module RedirectTo
     end
 
     def location_matches?
-      if expected_location
-        expected_location == actual_location
+      case expected_location
+      when String then expected_location == actual_location
+      when Regexp then actual_location =~ expected_location
       end
     end
   end
