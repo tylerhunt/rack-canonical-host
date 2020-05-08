@@ -4,7 +4,7 @@ Gem::Specification.new do |gem|
   gem.name = 'rack-canonical-host'
   gem.version = Rack::CanonicalHost::VERSION
   gem.summary = 'Rack middleware for defining a canonical host name.'
-  gem.homepage = 'http://github.com/tylerhunt/rack-canonical-host'
+  gem.homepage = 'https://github.com/tylerhunt/rack-canonical-host'
   gem.author = 'Tyler Hunt'
 
   gem.add_dependency 'addressable', '> 0', '< 3'
