@@ -42,11 +42,12 @@ module Rack
 
     private
 
-      def any_match?(patterns, host)
+      def any_match?(patterns, request_uri)
         patterns.any? { |pattern|
           case pattern
-          when Regexp then host =~ pattern
-          when String then host == pattern
+          when Proc   then pattern.call(request_uri)
+          when Regexp then request_uri.host =~ pattern
+          when String then request_uri.host == pattern
           else false
           end
         }
@@ -63,13 +64,13 @@ module Rack
       def enabled?
         return true if conditions.empty?
 
-        any_match?(conditions, request_uri.host)
+        any_match?(conditions, request_uri)
       end
 
       def ignored?
         return false if ignore.empty?
 
-        any_match?(ignore, request_uri.host)
+        any_match?(ignore, request_uri)
       end
 
       def known?

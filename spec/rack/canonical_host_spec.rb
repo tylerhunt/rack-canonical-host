@@ -111,6 +111,24 @@ RSpec.describe Rack::CanonicalHost do
     end
 
     context 'with :ignore option' do
+      context 'with proc' do
+        let(:app) { build_app('example.com', :ignore => proc { |uri| uri.host == 'example.net' }) }
+
+        include_context 'a matching request'
+        include_context 'a non-matching request'
+
+        context 'with a request to an ignored host' do
+          let(:url) { 'http://example.net/full/path' }
+
+          it { should_not be_redirect }
+
+          it 'calls the inner app' do
+            expect(inner_app).to receive(:call).with(env)
+            call_app
+          end
+        end
+      end
+
       context 'with string' do
         let(:app) { build_app('example.com', :ignore => 'example.net') }
 
@@ -149,6 +167,22 @@ RSpec.describe Rack::CanonicalHost do
     end
 
     context 'with :if option' do
+      context 'with a proc' do
+        let(:app) { build_app('www.example.com', :if => proc { |uri| uri.host == 'example.com' }) }
+
+        context 'with a request to a matching host' do
+          let(:url) { 'http://example.com/full/path' }
+
+          it { should redirect_to('http://www.example.com/full/path') }
+        end
+
+        context 'with a request to a non-matching host' do
+          let(:url) { 'http://api.example.com/full/path' }
+
+          it { should_not be_redirect }
+        end
+      end
+
       context 'with string' do
         let(:app) { build_app('www.example.com', :if => 'example.com') }
 
