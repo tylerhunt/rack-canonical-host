@@ -12,12 +12,7 @@ jobs:
           - '3.0'
           - '2.7'
           - '2.6'
-        experimental: [false]
-        include:
-          - ruby: '3.1.0-dev'
-            experimental: true
       fail-fast: false
-    continue-on-error: ${{ matrix.experimental }}
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
