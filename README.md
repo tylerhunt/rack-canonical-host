@@ -66,8 +66,9 @@ Now, the middleware will only be used if a canonical host has been defined.
 
 ### Options
 
-If you’d like the middleware to ignore certain hosts, use the `:ignore`
-option, which accepts a string, a regular expression, a proc, or an array of those objects.
+If you’d like the middleware to ignore certain hosts, use the `:ignore` option,
+which accepts a string, a regular expression, a proc, or an array of those
+objects.
 
 ```ruby
 use Rack::CanonicalHost, 'example.com', ignore: 'api.example.com'
@@ -89,11 +90,12 @@ end
 
 If you want it to react only on specific hosts within a multi-domain
 environment, use the `:if` option, which accepts a string, a regular
-expression, a proc, or an array of those objects.
+expression, a `lambda` or `proc`, or an array of those objects.
 
 ```ruby
 use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
-use Rack::CanonicalHost, 'example.org', if: proc { |uri| uri.host == 'www.example.org' }
+use Rack::CanonicalHost, 'example.org',
+  if: ->(uri) { uri.host == 'www.example.org' }
 ```
 
 ### Cache-Control

@@ -1,6 +1,6 @@
 RSpec.describe Rack::CanonicalHost do
   let(:app_response) { [200, { 'Content-Type' => 'text/plain' }, %w(OK)] }
-  let(:inner_app) { lambda { |env| response } }
+  let(:inner_app) { ->(env) { response } }
 
   before do
     allow(inner_app)
@@ -111,8 +111,13 @@ RSpec.describe Rack::CanonicalHost do
     end
 
     context 'with :ignore option' do
-      context 'with proc' do
-        let(:app) { build_app('example.com', ignore: proc { |uri| uri.host == 'example.net' }) }
+      context 'with lambda/proc' do
+        let(:app) {
+          build_app(
+            'example.com',
+            ignore: ->(uri) { uri.host == 'example.net' }
+          )
+        }
 
         include_context 'a matching request'
         include_context 'a non-matching request'
@@ -167,8 +172,13 @@ RSpec.describe Rack::CanonicalHost do
     end
 
     context 'with :if option' do
-      context 'with a proc' do
-        let(:app) { build_app('www.example.com', if: proc { |uri| uri.host == 'example.com' }) }
+      context 'with a lambda/proc' do
+        let(:app) {
+          build_app(
+            'www.example.com',
+            if: ->(uri) { uri.host == 'example.com' }
+          )
+        }
 
         context 'with a request to a matching host' do
           let(:url) { 'http://example.com/full/path' }
