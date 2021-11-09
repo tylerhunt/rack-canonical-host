@@ -140,10 +140,11 @@ suggestions:
   * [Eric Allam](https://github.com/ericallam)
   * [Fabrizio Regini](https://github.com/freegenie)
   * [Daniel Searles](https://github.com/squaresurf)
-
+  * [Daniel Searles](https://github.com/squaresurf)
+  * [Sean Huber](https://github.com/shuber)
 
 ## Copyright
 
-Copyright © 2009-2017 Tyler Hunt.
+Copyright © 2009-2021 Tyler Hunt.
 
 Released under the terms of the MIT license. See LICENSE for details.

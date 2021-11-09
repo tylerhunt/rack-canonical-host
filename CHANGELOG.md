@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+  * Support lambda/proc on `:if` and `:ignore` options ([Sean Huber][shuber])
+  * Drop support for Ruby versions 2.3, 2.4, and 2.5 ([Tyler Hunt][tylerhunt])
+
 ## 1.0.0 (2020-04-16)
 
   * Use equality to determine string matches on `:if` and `:ignore`
@@ -77,6 +82,7 @@
 [jschuur]: http://github.com/jschuur
 [nbibler]: http://github.com/nbibler
 [rubymaverick]: http://github.com/ericallam
+[shuber]: http://github.com/shuber
 [squaresurf]: https://github.com/squaresurf
 [tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
