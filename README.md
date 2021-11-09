@@ -93,7 +93,6 @@ expression, a proc, or an array of those objects.
 
 ```ruby
 use Rack::CanonicalHost, 'example.com', if: /.*\.example\.com/
-use Rack::CanonicalHost, 'example.ru', if: /.*\.example\.ru/
 use Rack::CanonicalHost, 'example.org', if: proc { |uri| uri.host == 'www.example.org' }
 ```
 
