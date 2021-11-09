@@ -112,7 +112,7 @@ RSpec.describe Rack::CanonicalHost do
 
     context 'with :ignore option' do
       context 'with proc' do
-        let(:app) { build_app('example.com', :ignore => proc { |uri| uri.host == 'example.net' }) }
+        let(:app) { build_app('example.com', ignore: proc { |uri| uri.host == 'example.net' }) }
 
         include_context 'a matching request'
         include_context 'a non-matching request'
@@ -130,7 +130,7 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with string' do
-        let(:app) { build_app('example.com', :ignore => 'example.net') }
+        let(:app) { build_app('example.com', ignore: 'example.net') }
 
         include_context 'a matching request'
         include_context 'a non-matching request'
@@ -148,7 +148,7 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with regular expression' do
-        let(:app) { build_app('example.com', :ignore => /ex.*\.net/) }
+        let(:app) { build_app('example.com', ignore: /ex.*\.net/) }
 
         include_context 'a matching request'
         include_context 'a non-matching request'
@@ -168,7 +168,7 @@ RSpec.describe Rack::CanonicalHost do
 
     context 'with :if option' do
       context 'with a proc' do
-        let(:app) { build_app('www.example.com', :if => proc { |uri| uri.host == 'example.com' }) }
+        let(:app) { build_app('www.example.com', if: proc { |uri| uri.host == 'example.com' }) }
 
         context 'with a request to a matching host' do
           let(:url) { 'http://example.com/full/path' }
@@ -184,7 +184,7 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with string' do
-        let(:app) { build_app('www.example.com', :if => 'example.com') }
+        let(:app) { build_app('www.example.com', if: 'example.com') }
 
         context 'with a request to a matching host' do
           let(:url) { 'http://example.com/full/path' }
@@ -200,7 +200,7 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with a regular expression' do
-        let(:app) { build_app('example.com', :if => '.*\.example\.com') }
+        let(:app) { build_app('example.com', if: '.*\.example\.com') }
 
         context 'with a request to a matching host' do
           let(:url) { 'http://www.example.com/full/path' }
@@ -221,7 +221,7 @@ RSpec.describe Rack::CanonicalHost do
 
       context 'with a max-age value' do
         let(:app) {
-          build_app('example.com', :cache_control => 'max-age=3600')
+          build_app('example.com', cache_control: 'max-age=3600')
         }
 
         it {
@@ -230,19 +230,19 @@ RSpec.describe Rack::CanonicalHost do
       end
 
       context 'with a no-cache value' do
-        let(:app) { build_app('example.com', :cache_control => 'no-cache') }
+        let(:app) { build_app('example.com', cache_control: 'no-cache') }
 
         it { expect(subject).to have_header('Cache-Control').with('no-cache') }
       end
 
       context 'with a false value' do
-        let(:app) { build_app('example.com', :cache_control => false) }
+        let(:app) { build_app('example.com', cache_control: false) }
 
         it { expect(subject).to_not have_header('Cache-Control') }
       end
 
       context 'with a nil value' do
-        let(:app) { build_app('example.com', :cache_control => false) }
+        let(:app) { build_app('example.com', cache_control: false) }
 
         it { expect(subject).to_not have_header('Cache-Control') }
       end
