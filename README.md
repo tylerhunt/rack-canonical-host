@@ -5,7 +5,7 @@ for your application. Requests for other host names will then be redirected to
 the canonical host.
 
 [![Gem Version](https://img.shields.io/gem/v/rack-canonical-host)](http://rubygems.org/gems/rack-canonical-host)
-[![Build Status](https://img.shields.io/travis/tylerhunt/rack-canonical-host)](https://travis-ci.org/tylerhunt/rack-canonical-host)
+[![Build Status](https://github.com/tylerhunt/rack-canonical-host/actions/workflows/ci.yml/badge.svg)](https://github.com/tylerhunt/rack-canonical-host/actions/workflows/ci.yml)
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/tylerhunt/rack-canonical-host)](https://codeclimate.com/github/tylerhunt/rack-canonical-host)
 
 ## Installation

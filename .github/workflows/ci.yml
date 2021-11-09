@@ -1,0 +1,27 @@
+name: CI
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Ruby ${{ matrix.ruby }} ${{ matrix.name_extra || '' }}
+    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix:
+        ruby:
+          - '3.0'
+          - '2.7'
+          - '2.6'
+        experimental: [false]
+        include:
+          - ruby: '3.1.0-dev'
+            experimental: true
+      fail-fast: false
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - run: bundle install
+      - run: bundle exec rake
