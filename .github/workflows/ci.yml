@@ -4,7 +4,7 @@ on:
   - pull_request
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} ${{ matrix.name_extra || '' }}
+    name: Ruby ${{ matrix.ruby }} & Rack ${{ matrix.rack }}
     runs-on: 'ubuntu-latest'
     strategy:
       matrix:
@@ -12,15 +12,15 @@ jobs:
           - '3.0'
           - '2.7'
           - '2.6'
-        gemfile:
-          - gemfiles/rack_1.5.gemfile
-          - gemfiles/rack_1.6.gemfile
-          - gemfiles/rack_2.0.gemfile
-          - gemfiles/rack_2.1.gemfile
-          - gemfiles/rack_2.2.gemfile
+        rack:
+          - '1.5'
+          - '1.6'
+          - '2.0'
+          - '2.1'
+          - '2.2'
       fail-fast: false
     env:
-      BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
+      BUNDLE_GEMFILE: "gemfiles/rack_${{ matrix.rack }}.gemfile"
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
