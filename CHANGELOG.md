@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0 (2021-11-10)
 
   * Support lambda/proc on `:if` and `:ignore` options ([Sean Huber][shuber])
   * Drop support for Ruby versions 2.3, 2.4, and 2.5 ([Tyler Hunt][tylerhunt])
