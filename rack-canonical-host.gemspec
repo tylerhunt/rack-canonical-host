@@ -14,6 +14,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
 
-  gem.files = `git ls-files`.split($\)
+  gem.files = Dir['lib/**/*.rb'] + ['README.md', 'CHANGELOG.md', 'LICENSE']
   gem.require_paths = ['lib']
 end
