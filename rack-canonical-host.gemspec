@@ -3,6 +3,7 @@ require './lib/rack/canonical_host/version'
 Gem::Specification.new do |gem|
   gem.name = 'rack-canonical-host'
   gem.version = Rack::CanonicalHost::VERSION
+  gem.licenses = ['MIT']
   gem.summary = 'Rack middleware for defining a canonical host name.'
   gem.homepage = 'https://github.com/tylerhunt/rack-canonical-host'
   gem.author = 'Tyler Hunt'
