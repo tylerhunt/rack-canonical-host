@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'addressable', '> 0', '< 3'
   gem.add_dependency 'rack', ['>= 1.0.0', '< 3']
   gem.add_development_dependency 'appraisal', '~> 2.2'
-  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.0'
 
   gem.files = `git ls-files`.split($\)
