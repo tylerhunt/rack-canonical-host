@@ -145,6 +145,6 @@ suggestions:
 
 ## Copyright
 
-Copyright © 2009-2021 Tyler Hunt.
+Copyright © 2009 Tyler Hunt.
 
 Released under the terms of the MIT license. See LICENSE for details.
