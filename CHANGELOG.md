@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Remove unneeded gem directives ([Olle Jonsson][olleolleolle])
+
 ## 1.1.0 (2021-11-10)
 
   * Support lambda/proc on `:if` and `:ignore` options ([Sean Huber][shuber])
@@ -87,3 +91,4 @@
 [tma]: http://github.com/tma
 [tylerhunt]: http://github.com/tylerhunt
 [zoso10]: http://github.com/zoso10
+[olleolleolle]: http://github.com/olleolleolle
