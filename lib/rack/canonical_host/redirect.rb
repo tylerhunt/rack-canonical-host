@@ -26,6 +26,8 @@ module Rack
       def canonical?
         return true unless enabled?
         known? || ignored?
+      rescue Addressable::URI::InvalidURIError
+        return true
       end
 
       def response
