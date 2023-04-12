@@ -76,13 +76,12 @@ RSpec.describe Rack::CanonicalHost do
     context 'when the request has JavaScript in the URL' do
       let(:url) { 'http://www.example.com/full/path' }
 
-      let(:headers) {
-        { 'query_string' => '"><script>alert(73541);</script>' }
-      }
-
       let(:app) { build_app('example.com') }
 
       it 'escapes the JavaScript' do
+        allow_any_instance_of(Rack::Request).to receive(:query_string).
+          and_return '"><script>alert(73541);</script>'
+
         expect(response)
           .to redirect_to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
       end
@@ -92,13 +91,13 @@ RSpec.describe Rack::CanonicalHost do
       let(:url) { 'http://proxy.test/full/path' }
 
       context 'which matches the canonical host' do
-        let(:headers) { { 'http_x_forwarded_host' => 'example.com:80' } }
+        before { env['HTTP_X_FORWARDED_HOST'] = 'example.com:80' }
 
         include_context 'a matching request'
       end
 
       context 'which does not match the canonical host' do
-        let(:headers) { { 'http_x_forwarded_host' => 'www.example.com:80' } }
+        before { env['HTTP_X_FORWARDED_HOST'] = 'www.example.com:80' }
 
         include_context 'a non-matching request'
       end
