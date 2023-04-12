@@ -1,5 +1,5 @@
 RSpec.describe Rack::CanonicalHost do
-  let(:app_response) { [200, { 'Content-Type' => 'text/plain' }, %w(OK)] }
+  let(:app_response) { [200, { 'content-type' => 'text/plain' }, %w(OK)] }
   let(:inner_app) { ->(env) { response } }
 
   before do
@@ -41,7 +41,7 @@ RSpec.describe Rack::CanonicalHost do
         call_app
       end
 
-      it { expect(response).to_not have_header('Cache-Control') }
+      it { expect(response).to_not have_header('cache-control') }
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe Rack::CanonicalHost do
       let(:url) { 'http://www.example.com/full/path' }
 
       let(:headers) {
-        { 'QUERY_STRING' => '"><script>alert(73541);</script>' }
+        { 'query_string' => '"><script>alert(73541);</script>' }
       }
 
       let(:app) { build_app('example.com') }
@@ -92,13 +92,13 @@ RSpec.describe Rack::CanonicalHost do
       let(:url) { 'http://proxy.test/full/path' }
 
       context 'which matches the canonical host' do
-        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'example.com:80' } }
+        let(:headers) { { 'http_x_forwarded_host' => 'example.com:80' } }
 
         include_context 'a matching request'
       end
 
       context 'which does not match the canonical host' do
-        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80' } }
+        let(:headers) { { 'http_x_forwarded_host' => 'www.example.com:80' } }
 
         include_context 'a non-matching request'
       end
@@ -235,26 +235,26 @@ RSpec.describe Rack::CanonicalHost do
         }
 
         it {
-          expect(response).to have_header('Cache-Control').with('max-age=3600')
+          expect(response).to have_header('cache-control').with('max-age=3600')
         }
       end
 
       context 'with a no-cache value' do
         let(:app) { build_app('example.com', cache_control: 'no-cache') }
 
-        it { expect(subject).to have_header('Cache-Control').with('no-cache') }
+        it { expect(subject).to have_header('cache-control').with('no-cache') }
       end
 
       context 'with a false value' do
         let(:app) { build_app('example.com', cache_control: false) }
 
-        it { expect(subject).to_not have_header('Cache-Control') }
+        it { expect(subject).to_not have_header('cache-control') }
       end
 
       context 'with a nil value' do
         let(:app) { build_app('example.com', cache_control: false) }
 
-        it { expect(subject).to_not have_header('Cache-Control') }
+        it { expect(subject).to_not have_header('cache-control') }
       end
     end
 
