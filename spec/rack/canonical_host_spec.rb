@@ -63,7 +63,9 @@ RSpec.describe Rack::CanonicalHost do
     context 'when the request has a pipe in the URL' do
       let(:url) { 'https://example.com/full/path?value=withPIPE' }
 
-      before { env['QUERY_STRING'].sub!('PIPE', '|') }
+      before do
+        env['QUERY_STRING'].sub!('PIPE', '|')
+      end
 
       it { expect { call_app }.to_not raise_error }
     end
@@ -86,13 +88,13 @@ RSpec.describe Rack::CanonicalHost do
       let(:url) { 'http://proxy.test/full/path' }
 
       context 'which matches the canonical host' do
-        before { env['HTTP_X_FORWARDED_HOST'] = 'example.com:80' }
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'example.com:80' } }
 
         it_behaves_like 'a matching request'
       end
 
       context 'which does not match the canonical host' do
-        before { env['HTTP_X_FORWARDED_HOST'] = 'www.example.com:80' }
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80' } }
 
         it_behaves_like 'a non-matching request'
       end
