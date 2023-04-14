@@ -45,11 +45,6 @@ RSpec.describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'matching and non-matching requests' do
-    include_context 'a matching request'
-    include_context 'a non-matching request'
-  end
-
   context '#call' do
     let(:headers) { {} }
 
