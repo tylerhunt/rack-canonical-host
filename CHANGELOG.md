@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 (2023-04-14)
 
   * Add support for Rack 3.0 ([Vinny Diehl][vinnydiehl])
   * Remove unneeded gem directives ([Olle Jonsson][olleolleolle])
