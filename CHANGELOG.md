@@ -32,7 +32,7 @@
   * Remove `:force_ssl` option in favor of using [rack-ssl][rack-ssl]
     ([Nathaniel Bibler][nbibler])
 
-[rack-ssl]: http://rubygems.org/gems/rack-ssl
+[rack-ssl]: https://rubygems.org/gems/rack-ssl
 
 ## 0.1.0 (2014-04-16)
 
@@ -79,18 +79,18 @@
 
   * Initial release ([Tyler Hunt][tylerhunt])
 
-[Aupajo]: http://github.com/Aupajo
-[finack]: http://github.com/finack
-[firedev]: http://github.com/firedev
-[jcarbo]: http://github.com/jcarbo
-[jellybob]: http://github.com/jellybob
-[jschuur]: http://github.com/jschuur
-[nbibler]: http://github.com/nbibler
-[rubymaverick]: http://github.com/ericallam
-[shuber]: http://github.com/shuber
-[squaresurf]: https://github.com/squaresurf
-[tma]: http://github.com/tma
-[tylerhunt]: http://github.com/tylerhunt
-[zoso10]: http://github.com/zoso10
-[olleolleolle]: http://github.com/olleolleolle
-[vinnydiehl]: http://github.com/vinnydiehl
+[Aupajo]: https://github.com/Aupajo
+[finack]: https://github.com/finack
+[firedev]: https://github.com/firedev
+[jcarbo]: https://github.com/jcarbo
+[jellybob]: https://github.com/jellybob
+[jschuur]: https://github.com/jschuur
+[nbibler]: https://github.com/nbibler
+[rubymaverick]: https://github.com/ericallam
+[shuber]: https://github.com/shuber
+[squaresurf]: httpss://github.com/squaresurf
+[tma]: https://github.com/tma
+[tylerhunt]: https://github.com/tylerhunt
+[zoso10]: https://github.com/zoso10
+[olleolleolle]: https://github.com/olleolleolle
+[vinnydiehl]: https://github.com/vinnydiehl
