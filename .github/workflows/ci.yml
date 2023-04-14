@@ -20,6 +20,7 @@ jobs:
           - '2.0'
           - '2.1'
           - '2.2'
+          - '3.0'
       fail-fast: false
     env:
       BUNDLE_GEMFILE: "gemfiles/rack_${{ matrix.rack }}.gemfile"
