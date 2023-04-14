@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+  * Add support for Rack 3.0 ([Vinny Diehl][vinnydiehl])
   * Remove unneeded gem directives ([Olle Jonsson][olleolleolle])
 
 ## 1.1.0 (2021-11-10)
@@ -92,3 +93,4 @@
 [tylerhunt]: http://github.com/tylerhunt
 [zoso10]: http://github.com/zoso10
 [olleolleolle]: http://github.com/olleolleolle
+[vinnydiehl]: http://github.com/vinnydiehl
