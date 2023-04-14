@@ -17,10 +17,8 @@ RSpec.describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'a matching request' do
+  shared_examples 'a matching request' do
     context 'with a request to a matching host' do
-      let(:url) { 'http://example.com/full/path' }
-
       it { should_not be_redirect }
 
       it 'calls the inner app' do
@@ -30,10 +28,8 @@ RSpec.describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'a non-matching request' do
+  shared_examples 'a non-matching request' do
     context 'with a request to a non-matching host' do
-      let(:url) { 'http://www.example.com/full/path' }
-
       it { should redirect_to('http://example.com/full/path') }
 
       it 'does not call the inner app' do
@@ -46,6 +42,7 @@ RSpec.describe Rack::CanonicalHost do
   end
 
   context '#call' do
+    let(:url) { 'http://example.com/full/path' }
     let(:headers) { {} }
 
     let(:app) { build_app('example.com') }
@@ -57,8 +54,11 @@ RSpec.describe Rack::CanonicalHost do
 
     subject(:response) { call_app }
 
-    include_context 'a matching request'
-    include_context 'a non-matching request'
+    it_behaves_like 'a matching request'
+
+    it_behaves_like 'a non-matching request' do
+      let(:url) { 'http://www.example.com/full/path' }
+    end
 
     context 'when the request has a pipe in the URL' do
       let(:url) { 'https://example.com/full/path?value=withPIPE' }
@@ -88,20 +88,20 @@ RSpec.describe Rack::CanonicalHost do
       context 'which matches the canonical host' do
         before { env['HTTP_X_FORWARDED_HOST'] = 'example.com:80' }
 
-        include_context 'a matching request'
+        it_behaves_like 'a matching request'
       end
 
       context 'which does not match the canonical host' do
         before { env['HTTP_X_FORWARDED_HOST'] = 'www.example.com:80' }
 
-        include_context 'a non-matching request'
+        it_behaves_like 'a non-matching request'
       end
     end
 
     context 'without a host' do
       let(:app) { build_app(nil) }
 
-      include_context 'a matching request'
+      it_behaves_like 'a matching request'
     end
 
     context 'with :ignore option' do
@@ -113,8 +113,11 @@ RSpec.describe Rack::CanonicalHost do
           )
         }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -131,8 +134,11 @@ RSpec.describe Rack::CanonicalHost do
       context 'with string' do
         let(:app) { build_app('example.com', ignore: 'example.net') }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -149,8 +155,11 @@ RSpec.describe Rack::CanonicalHost do
       context 'with regular expression' do
         let(:app) { build_app('example.com', ignore: /ex.*\.net/) }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -255,14 +264,20 @@ RSpec.describe Rack::CanonicalHost do
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 
-      include_context 'a matching request'
-      include_context 'a non-matching request'
+      it_behaves_like 'a matching request'
+
+      it_behaves_like 'a non-matching request' do
+        let(:url) { 'http://www.example.com/full/path' }
+      end
 
       context 'that returns nil' do
         let(:app) { build_app('example.com') { nil } }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
       end
     end
   end
