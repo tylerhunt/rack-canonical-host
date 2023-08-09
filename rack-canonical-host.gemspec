@@ -8,7 +8,6 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://github.com/tylerhunt/rack-canonical-host'
   gem.author = 'Tyler Hunt'
 
-  gem.add_dependency 'addressable', '> 0', '< 3'
   gem.add_dependency 'rack', '>= 1', '< 4'
   gem.add_development_dependency 'appraisal', '~> 2.2'
   gem.add_development_dependency 'rake', '~> 13.0'

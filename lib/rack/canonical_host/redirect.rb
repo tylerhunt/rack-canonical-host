@@ -1,4 +1,3 @@
-require 'addressable/uri'
 require 'rack'
 
 module Rack
@@ -84,7 +83,7 @@ module Rack
       end
 
       def request_uri
-        @request_uri ||= Addressable::URI.parse(Rack::Request.new(env).url)
+        @request_uri ||= URI.parse(Rack::Request.new(env).url)
       end
     end
   end
