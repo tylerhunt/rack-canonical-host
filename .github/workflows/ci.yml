@@ -9,6 +9,8 @@ jobs:
     strategy:
       matrix:
         ruby:
+          - '3.2'
+          - '3.1'
           - '3.0'
           - '2.7'
           - '2.6'
@@ -18,11 +20,12 @@ jobs:
           - '2.0'
           - '2.1'
           - '2.2'
+          - '3.0'
       fail-fast: false
     env:
       BUNDLE_GEMFILE: "gemfiles/rack_${{ matrix.rack }}.gemfile"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

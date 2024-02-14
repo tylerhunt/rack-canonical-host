@@ -1,5 +1,5 @@
 RSpec.describe Rack::CanonicalHost do
-  let(:app_response) { [200, { 'Content-Type' => 'text/plain' }, %w(OK)] }
+  let(:app_response) { [200, { 'content-type' => 'text/plain' }, %w(OK)] }
   let(:inner_app) { ->(env) { response } }
 
   before do
@@ -17,10 +17,8 @@ RSpec.describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'a matching request' do
+  shared_examples 'a matching request' do
     context 'with a request to a matching host' do
-      let(:url) { 'http://example.com/full/path' }
-
       it { should_not be_redirect }
 
       it 'calls the inner app' do
@@ -30,10 +28,8 @@ RSpec.describe Rack::CanonicalHost do
     end
   end
 
-  shared_context 'a non-matching request' do
+  shared_examples 'a non-matching request' do
     context 'with a request to a non-matching host' do
-      let(:url) { 'http://www.example.com/full/path' }
-
       it { should redirect_to('http://example.com/full/path') }
 
       it 'does not call the inner app' do
@@ -41,16 +37,12 @@ RSpec.describe Rack::CanonicalHost do
         call_app
       end
 
-      it { expect(response).to_not have_header('Cache-Control') }
+      it { expect(response).to_not have_header('cache-control') }
     end
   end
 
-  shared_context 'matching and non-matching requests' do
-    include_context 'a matching request'
-    include_context 'a non-matching request'
-  end
-
   context '#call' do
+    let(:url) { 'http://example.com/full/path' }
     let(:headers) { {} }
 
     let(:app) { build_app('example.com') }
@@ -62,13 +54,18 @@ RSpec.describe Rack::CanonicalHost do
 
     subject(:response) { call_app }
 
-    include_context 'a matching request'
-    include_context 'a non-matching request'
+    it_behaves_like 'a matching request'
+
+    it_behaves_like 'a non-matching request' do
+      let(:url) { 'http://www.example.com/full/path' }
+    end
 
     context 'when the request has a pipe in the URL' do
       let(:url) { 'https://example.com/full/path?value=withPIPE' }
 
-      before { env['QUERY_STRING'].sub!('PIPE', '|') }
+      before do
+        env['QUERY_STRING'].sub!('PIPE', '|')
+      end
 
       it { expect { call_app }.to_not raise_error }
     end
@@ -76,13 +73,12 @@ RSpec.describe Rack::CanonicalHost do
     context 'when the request has JavaScript in the URL' do
       let(:url) { 'http://www.example.com/full/path' }
 
-      let(:headers) {
-        { 'QUERY_STRING' => '"><script>alert(73541);</script>' }
-      }
-
       let(:app) { build_app('example.com') }
 
       it 'escapes the JavaScript' do
+        allow_any_instance_of(Rack::Request).to receive(:query_string).
+          and_return '"><script>alert(73541);</script>'
+
         expect(response)
           .to redirect_to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
       end
@@ -94,20 +90,20 @@ RSpec.describe Rack::CanonicalHost do
       context 'which matches the canonical host' do
         let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'example.com:80' } }
 
-        include_context 'a matching request'
+        it_behaves_like 'a matching request'
       end
 
       context 'which does not match the canonical host' do
         let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80' } }
 
-        include_context 'a non-matching request'
+        it_behaves_like 'a non-matching request'
       end
     end
 
     context 'without a host' do
       let(:app) { build_app(nil) }
 
-      include_context 'a matching request'
+      it_behaves_like 'a matching request'
     end
 
     context 'with :ignore option' do
@@ -119,8 +115,11 @@ RSpec.describe Rack::CanonicalHost do
           )
         }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -137,8 +136,11 @@ RSpec.describe Rack::CanonicalHost do
       context 'with string' do
         let(:app) { build_app('example.com', ignore: 'example.net') }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -155,8 +157,11 @@ RSpec.describe Rack::CanonicalHost do
       context 'with regular expression' do
         let(:app) { build_app('example.com', ignore: /ex.*\.net/) }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
 
         context 'with a request to an ignored host' do
           let(:url) { 'http://example.net/full/path' }
@@ -235,40 +240,46 @@ RSpec.describe Rack::CanonicalHost do
         }
 
         it {
-          expect(response).to have_header('Cache-Control').with('max-age=3600')
+          expect(response).to have_header('cache-control').with('max-age=3600')
         }
       end
 
       context 'with a no-cache value' do
         let(:app) { build_app('example.com', cache_control: 'no-cache') }
 
-        it { expect(subject).to have_header('Cache-Control').with('no-cache') }
+        it { expect(subject).to have_header('cache-control').with('no-cache') }
       end
 
       context 'with a false value' do
         let(:app) { build_app('example.com', cache_control: false) }
 
-        it { expect(subject).to_not have_header('Cache-Control') }
+        it { expect(subject).to_not have_header('cache-control') }
       end
 
       context 'with a nil value' do
         let(:app) { build_app('example.com', cache_control: false) }
 
-        it { expect(subject).to_not have_header('Cache-Control') }
+        it { expect(subject).to_not have_header('cache-control') }
       end
     end
 
     context 'with a block' do
       let(:app) { build_app { 'example.com' } }
 
-      include_context 'a matching request'
-      include_context 'a non-matching request'
+      it_behaves_like 'a matching request'
+
+      it_behaves_like 'a non-matching request' do
+        let(:url) { 'http://www.example.com/full/path' }
+      end
 
       context 'that returns nil' do
         let(:app) { build_app('example.com') { nil } }
 
-        include_context 'a matching request'
-        include_context 'a non-matching request'
+        it_behaves_like 'a matching request'
+
+        it_behaves_like 'a non-matching request' do
+          let(:url) { 'http://www.example.com/full/path' }
+        end
       end
     end
   end

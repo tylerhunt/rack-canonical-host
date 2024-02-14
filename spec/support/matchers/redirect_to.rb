@@ -45,7 +45,7 @@ module RedirectTo
 
   private
 
-    LOCATION = 'Location'
+    LOCATION = 'location'
     STATUS = 301
 
     def actual_location

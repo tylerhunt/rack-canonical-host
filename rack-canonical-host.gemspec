@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.author = 'Tyler Hunt'
 
   gem.add_dependency 'addressable', '> 0', '< 3'
-  gem.add_dependency 'rack', ['>= 1.0.0', '< 3']
+  gem.add_dependency 'rack', '>= 1', '< 4'
   gem.add_development_dependency 'appraisal', '~> 2.2'
   gem.add_development_dependency 'rake', '~> 13.0'
   gem.add_development_dependency 'rspec', '~> 3.0'

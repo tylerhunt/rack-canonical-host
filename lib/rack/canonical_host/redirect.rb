@@ -57,9 +57,9 @@ module Rack
 
       def headers
         {
-          'Cache-Control' => cache_control,
-          'Content-Type' => 'text/html',
-          'Location' => new_url,
+          'cache-control' => cache_control,
+          'content-type' => 'text/html',
+          'location' => new_url,
         }.reject { |_, value| !value }
       end
 
