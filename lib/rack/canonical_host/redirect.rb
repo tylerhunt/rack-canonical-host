@@ -27,7 +27,7 @@ module Rack
         return true unless enabled?
         known? || ignored?
       rescue Addressable::URI::InvalidURIError
-        return true
+        return false
       end
 
       def response
