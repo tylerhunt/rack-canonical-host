@@ -15,11 +15,13 @@ module Rack
       host = evaluate_host(env)
       redirect = Redirect.new(env, host, options)
 
-      if redirect.canonical?
-        app.call(env)
-      else
-        redirect.response
+      begin
+        return redirect.response unless redirect.canonical?
+      rescue Addressable::URI::InvalidURIError
+        return [400, { Rack::CONTENT_TYPE => "text/plain", Rack::CONTENT_LENGTH => "0" }, []]
       end
+
+      app.call(env)
     end
 
   protected

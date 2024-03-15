@@ -84,6 +84,20 @@ RSpec.describe Rack::CanonicalHost do
       end
     end
 
+
+    context 'when the app happens to have an invalid uri error' do
+      before do
+        allow(inner_app)
+          .to receive(:call)
+          .with(env)
+          .and_raise(Addressable::URI::InvalidURIError)
+      end
+
+      it 'explodes as expected' do
+        expect { call_app }.to raise_error(Addressable::URI::InvalidURIError)
+      end
+    end
+
     context 'with an X-Forwarded-Host' do
       let(:url) { 'http://proxy.test/full/path' }
 
@@ -97,6 +111,21 @@ RSpec.describe Rack::CanonicalHost do
         let(:headers) { { 'HTTP_X_FORWARDED_HOST' => 'www.example.com:80' } }
 
         it_behaves_like 'a non-matching request'
+      end
+
+      context 'which is an invalid uri' do
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => '[${jndi:ldap://172.16.26.190:52314/nessus}]/' } }
+
+        it { should_not be_redirect }
+
+        it { expect(response[0]).to be 400 }
+
+        it 'does not call the inner app' do
+          expect(inner_app).to_not receive(:call)
+          call_app
+        end
+
+        it { expect(response).to_not have_header('cache-control') }
       end
     end
 
