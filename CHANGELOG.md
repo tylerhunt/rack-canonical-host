@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Drop support for Rack 1.5 ([Tyler Hunt][tylerhunt])
+
 ## 1.2.0 (2023-04-14)
 
   * Add support for Rack 3.0 ([Vinny Diehl][vinnydiehl])

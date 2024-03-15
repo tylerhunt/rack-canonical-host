@@ -1,7 +1,3 @@
-appraise 'rack-1.5' do
-  gem 'rack', '~> 1.5.0'
-end
-
 appraise 'rack-1.6' do
   gem 'rack', '~> 1.6.0'
 end
