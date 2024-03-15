@@ -84,6 +84,20 @@ RSpec.describe Rack::CanonicalHost do
       end
     end
 
+
+    context 'when the app happens to have an invalid uri error' do
+      before do
+        allow(inner_app)
+          .to receive(:call)
+          .with(env)
+          .and_raise(Addressable::URI::InvalidURIError)
+      end
+
+      it 'explodes as expected' do
+        expect { call_app }.to raise_error(Addressable::URI::InvalidURIError)
+      end
+    end
+
     context 'with an X-Forwarded-Host' do
       let(:url) { 'http://proxy.test/full/path' }
 
