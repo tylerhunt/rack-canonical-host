@@ -140,8 +140,10 @@ suggestions:
   * [Eric Allam](https://github.com/ericallam)
   * [Fabrizio Regini](https://github.com/freegenie)
   * [Daniel Searles](https://github.com/squaresurf)
-  * [Daniel Searles](https://github.com/squaresurf)
   * [Sean Huber](https://github.com/shuber)
+  * [Olle Jonsson](https://github.com/olleolleolle)
+  * [Vinny Diehl](https://github.com/vinnydiehl)
+  * [Gareth Jones](https://github.com/G-Rath)
 
 ## Copyright
 
