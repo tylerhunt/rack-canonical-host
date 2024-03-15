@@ -1,13 +1,6 @@
 RSpec.describe Rack::CanonicalHost do
   let(:app_response) { [200, { 'content-type' => 'text/plain' }, %w(OK)] }
-  let(:inner_app) { ->(env) { response } }
-
-  before do
-    allow(inner_app)
-      .to receive(:call)
-      .with(env)
-      .and_return(app_response)
-  end
+  let(:inner_app) { ->(env) { app_response } }
 
   def build_app(host=nil, options={}, inner_app=inner_app(), &block)
     Rack::Builder.new do
@@ -22,7 +15,7 @@ RSpec.describe Rack::CanonicalHost do
       it { should_not be_redirect }
 
       it 'calls the inner app' do
-        expect(inner_app).to receive(:call).with(env)
+        expect(inner_app).to receive(:call).with(env).and_call_original
         call_app
       end
     end
@@ -76,25 +69,20 @@ RSpec.describe Rack::CanonicalHost do
       let(:app) { build_app('example.com') }
 
       it 'escapes the JavaScript' do
-        allow_any_instance_of(Rack::Request).to receive(:query_string).
-          and_return '"><script>alert(73541);</script>'
+        allow_any_instance_of(Rack::Request)
+          .to receive(:query_string)
+          .and_return('"><script>alert(73541);</script>')
 
         expect(response)
           .to redirect_to('http://example.com/full/path?%22%3E%3Cscript%3Ealert(73541)%3B%3C/script%3E')
       end
     end
 
+    context 'when the app raises an invalid URI error' do
+      let(:inner_app) { ->(env) { raise Addressable::URI::InvalidURIError } }
 
-    context 'when the app happens to have an invalid uri error' do
-      before do
-        allow(inner_app)
-          .to receive(:call)
-          .with(env)
-          .and_raise(Addressable::URI::InvalidURIError)
-      end
-
-      it 'explodes as expected' do
-        expect { call_app }.to raise_error(Addressable::URI::InvalidURIError)
+      it 'raises the error' do
+        expect { call_app }.to raise_error Addressable::URI::InvalidURIError
       end
     end
 
@@ -156,7 +144,7 @@ RSpec.describe Rack::CanonicalHost do
           it { should_not be_redirect }
 
           it 'calls the inner app' do
-            expect(inner_app).to receive(:call).with(env)
+            expect(inner_app).to receive(:call).with(env).and_call_original
             call_app
           end
         end
@@ -177,7 +165,7 @@ RSpec.describe Rack::CanonicalHost do
           it { should_not be_redirect }
 
           it 'calls the inner app' do
-            expect(inner_app).to receive(:call).with(env)
+            expect(inner_app).to receive(:call).with(env).and_call_original
             call_app
           end
         end
@@ -198,7 +186,7 @@ RSpec.describe Rack::CanonicalHost do
           it { should_not be_redirect }
 
           it 'calls the inner app' do
-            expect(inner_app).to receive(:call).with(env)
+            expect(inner_app).to receive(:call).with(env).and_call_original
             call_app
           end
         end
