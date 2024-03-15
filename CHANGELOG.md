@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 (2024-03-15)
 
   * Respond to invalid request URL with 400 ([Gareth Jones][G-Rath])
   * Drop support for Rack 1.5 ([Tyler Hunt][tylerhunt])
