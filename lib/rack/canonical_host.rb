@@ -1,5 +1,6 @@
 require 'rack'
 require 'rack/canonical_host/redirect'
+require 'rack/canonical_host/request'
 require 'rack/canonical_host/version'
 
 module Rack
@@ -12,16 +13,18 @@ module Rack
     end
 
     def call(env)
+      request = Request.new(env)
+
+      return request.bad_request_response unless request.valid?
+
       host = evaluate_host(env)
       redirect = Redirect.new(env, host, options)
 
-      begin
-        return redirect.response unless redirect.canonical?
-      rescue Addressable::URI::InvalidURIError
-        return [400, { Rack::CONTENT_TYPE => "text/plain", Rack::CONTENT_LENGTH => "0" }, []]
+      if redirect.canonical?
+        app.call(env)
+      else
+        redirect.response
       end
-
-      app.call(env)
     end
 
   protected
