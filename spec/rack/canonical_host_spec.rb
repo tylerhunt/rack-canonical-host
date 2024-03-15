@@ -30,7 +30,7 @@ RSpec.describe Rack::CanonicalHost do
         call_app
       end
 
-      it { expect(response).to_not have_header('cache-control') }
+      it { should_not have_header('cache-control') }
     end
   end
 
@@ -100,20 +100,24 @@ RSpec.describe Rack::CanonicalHost do
 
         it_behaves_like 'a non-matching request'
       end
+    end
 
-      context 'which is an invalid uri' do
-        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => '[${jndi:ldap://172.16.26.190:52314/nessus}]/' } }
+    context 'with an invalid X-Forwarded-Host' do
+      let(:headers) {
+        {
+          'HTTP_X_FORWARDED_HOST' =>
+            '[${jndi:ldap://172.16.26.190:52314/nessus}]/'
+        }
+      }
 
-        it { should_not be_redirect }
+      it { should_not be_redirect }
+      it { should be_bad_request }
+      it { should_not have_header('cache-control') }
 
-        it { expect(response[0]).to be 400 }
+      it 'does not call the inner app' do
+        expect(inner_app).to_not receive(:call)
 
-        it 'does not call the inner app' do
-          expect(inner_app).to_not receive(:call)
-          call_app
-        end
-
-        it { expect(response).to_not have_header('cache-control') }
+        call_app
       end
     end
 
@@ -252,13 +256,9 @@ RSpec.describe Rack::CanonicalHost do
       let(:url) { 'http://subdomain.example.net/full/path' }
 
       context 'with a max-age value' do
-        let(:app) {
-          build_app('example.com', cache_control: 'max-age=3600')
-        }
+        let(:app) { build_app('example.com', cache_control: 'max-age=3600') }
 
-        it {
-          expect(response).to have_header('cache-control').with('max-age=3600')
-        }
+        it { should have_header('cache-control').with('max-age=3600') }
       end
 
       context 'with a no-cache value' do
