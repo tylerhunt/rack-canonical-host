@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+  * Respond to invalid request URL with 400 ([Gareth Jones][G-Rath])
   * Drop support for Rack 1.5 ([Tyler Hunt][tylerhunt])
 
 ## 1.2.0 (2023-04-14)
@@ -98,3 +99,4 @@
 [zoso10]: https://github.com/zoso10
 [olleolleolle]: https://github.com/olleolleolle
 [vinnydiehl]: https://github.com/vinnydiehl
+[G-Rath]: https://github.com/G-Rath
