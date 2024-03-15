@@ -98,6 +98,21 @@ RSpec.describe Rack::CanonicalHost do
 
         it_behaves_like 'a non-matching request'
       end
+
+      context 'which is an invalid uri' do
+        let(:headers) { { 'HTTP_X_FORWARDED_HOST' => '[${jndi:ldap://172.16.26.190:52314/nessus}]/' } }
+
+        it { should_not be_redirect }
+
+        it { expect(response[0]).to be 400 }
+
+        it 'does not call the inner app' do
+          expect(inner_app).to_not receive(:call)
+          call_app
+        end
+
+        it { expect(response).to_not have_header('cache-control') }
+      end
     end
 
     context 'without a host' do

@@ -20,6 +20,8 @@ module Rack
       else
         redirect.response
       end
+    rescue Addressable::URI::InvalidURIError
+      [400, { Rack::CONTENT_TYPE => "text/plain", Rack::CONTENT_LENGTH => "0" }, []]
     end
 
   protected
