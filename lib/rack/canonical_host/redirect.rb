@@ -15,12 +15,13 @@ module Rack
         </html>
       HTML
 
-      def initialize(env, host, options={})
+      def initialize(env, host, options={}, &block)
         self.env = env
         self.host = host
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
+        self.block = block
       end
 
       def canonical?
@@ -39,6 +40,7 @@ module Rack
       attr_accessor :ignore
       attr_accessor :conditions
       attr_accessor :cache_control
+      attr_accessor :block
 
     private
 
@@ -74,13 +76,17 @@ module Rack
       end
 
       def known?
-        host.nil? || request_uri.host == host
+        evaluated_host.nil? || request_uri.host == evaluated_host
       end
 
       def new_url
         uri = request_uri.dup
-        uri.host = host
+        uri.host = evaluated_host
         uri.normalize.to_s
+      end
+
+      def evaluated_host
+        @evaluated_host ||= block and block.call(env) or host
       end
 
       def request_uri

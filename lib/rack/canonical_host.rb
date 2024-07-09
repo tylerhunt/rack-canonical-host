@@ -17,8 +17,7 @@ module Rack
 
       return request.bad_request_response unless request.valid?
 
-      host = evaluate_host(env)
-      redirect = Redirect.new(env, host, options)
+      redirect = Redirect.new(env, host, options, &block)
 
       if redirect.canonical?
         app.call(env)
@@ -33,11 +32,5 @@ module Rack
     attr_accessor :host
     attr_accessor :options
     attr_accessor :block
-
-  private
-
-    def evaluate_host(env)
-      block and block.call(env) or host
-    end
   end
 end
