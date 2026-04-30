@@ -1,19 +1,15 @@
-appraise 'rack-1.6' do
-  gem 'rack', '~> 1.6.0'
-end
-
-appraise 'rack-2.0' do
-  gem 'rack', '~> 2.0.0'
-end
-
-appraise 'rack-2.1' do
-  gem 'rack', '~> 2.1.0'
-end
-
 appraise 'rack-2.2' do
-  gem 'rack', '~> 2.2.0'
+  gem 'rack', '~> 2.2'
 end
 
 appraise 'rack-3.0' do
   gem 'rack', '~> 3.0'
+end
+
+appraise 'rack-3.1' do
+  gem 'rack', '~> 3.1'
+end
+
+appraise 'rack-3.2' do
+  gem 'rack', '~> 3.2'
 end

@@ -2,6 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "rack", "~> 2.1.0"
+gem "rack", "~> 3.2"
 
 gemspec path: "../"
