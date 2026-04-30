@@ -143,6 +143,7 @@ suggestions:
   * [Olle Jonsson](https://github.com/olleolleolle)
   * [Vinny Diehl](https://github.com/vinnydiehl)
   * [Gareth Jones](https://github.com/G-Rath)
+  * [Robert Keresnyei](https://github.com/yenshirak)
 
 ## Copyright
 
