@@ -6,7 +6,6 @@ the canonical host.
 
 [![Gem Version](https://img.shields.io/gem/v/rack-canonical-host)](http://rubygems.org/gems/rack-canonical-host)
 [![Build Status](https://github.com/tylerhunt/rack-canonical-host/actions/workflows/ci.yml/badge.svg)](https://github.com/tylerhunt/rack-canonical-host/actions/workflows/ci.yml)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/tylerhunt/rack-canonical-host)](https://codeclimate.com/github/tylerhunt/rack-canonical-host)
 
 ## Installation
 
