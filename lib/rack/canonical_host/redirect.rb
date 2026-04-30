@@ -15,9 +15,10 @@ module Rack
         </html>
       HTML
 
-      def initialize(env, host, options={})
+      def initialize(env, host=nil, options={}, &block)
         self.env = env
-        self.host = host
+        self.default_host = host
+        self.block = block
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
@@ -35,7 +36,8 @@ module Rack
     protected
 
       attr_accessor :env
-      attr_accessor :host
+      attr_accessor :default_host
+      attr_accessor :block
       attr_accessor :ignore
       attr_accessor :conditions
       attr_accessor :cache_control
@@ -53,6 +55,12 @@ module Rack
         }
       end
 
+      def enabled?
+        return true if conditions.empty?
+
+        any_match?(conditions, request_uri)
+      end
+
       def headers
         {
           'cache-control' => cache_control,
@@ -61,10 +69,9 @@ module Rack
         }.reject { |_, value| !value }
       end
 
-      def enabled?
-        return true if conditions.empty?
-
-        any_match?(conditions, request_uri)
+      def host
+        return @host if defined?(@host)
+        @host = block && block.call(env) || default_host
       end
 
       def ignored?

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+  * Lazily evaluate block ([Robert Keresnyei][yenshirak])
+
 ## 1.3.0 (2024-03-15)
 
   * Respond to invalid request URL with 400 ([Gareth Jones][G-Rath])
@@ -100,3 +104,4 @@
 [olleolleolle]: https://github.com/olleolleolle
 [vinnydiehl]: https://github.com/vinnydiehl
 [G-Rath]: https://github.com/G-Rath
+[yenshirak]: https://github.com/yenshirak
