@@ -18,6 +18,7 @@ module Rack
       def initialize(env, host, options={}, &block)
         self.env = env
         self.host = host
+        self.block = block
         self.ignore = Array(options[:ignore])
         self.conditions = Array(options[:if])
         self.cache_control = options[:cache_control]
@@ -37,6 +38,7 @@ module Rack
 
       attr_accessor :env
       attr_accessor :host
+      attr_accessor :block
       attr_accessor :ignore
       attr_accessor :conditions
       attr_accessor :cache_control
@@ -55,18 +57,23 @@ module Rack
         }
       end
 
+      def enabled?
+        return true if conditions.empty?
+
+        any_match?(conditions, request_uri)
+      end
+
+      def evaluated_host
+        return @evaluated_host if defined?(@evaluated_host)
+        @evaluated_host = block && block.call(env) || host
+      end
+
       def headers
         {
           'cache-control' => cache_control,
           'content-type' => 'text/html',
           'location' => new_url,
         }.reject { |_, value| !value }
-      end
-
-      def enabled?
-        return true if conditions.empty?
-
-        any_match?(conditions, request_uri)
       end
 
       def ignored?
@@ -83,10 +90,6 @@ module Rack
         uri = request_uri.dup
         uri.host = evaluated_host
         uri.normalize.to_s
-      end
-
-      def evaluated_host
-        @evaluated_host ||= block and block.call(env) or host
       end
 
       def request_uri

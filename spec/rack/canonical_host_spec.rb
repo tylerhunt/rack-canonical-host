@@ -298,6 +298,18 @@ RSpec.describe Rack::CanonicalHost do
           let(:url) { 'http://www.example.com/full/path' }
         end
       end
+
+      context 'with :if option that rejects the request' do
+        let(:url) { 'http://api.example.com/full/path' }
+
+        let(:app) {
+          build_app(nil, if: ->(uri) { uri.host == 'example.com' }) { raise }
+        }
+
+        it 'does not evaluate the block' do
+          expect { call_app }.to_not raise_error
+        end
+      end
     end
   end
 end
